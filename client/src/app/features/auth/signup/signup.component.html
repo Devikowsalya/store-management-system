@@ -1,0 +1,327 @@
+<div class="signup-page">
+
+  <div class="signup-container">
+
+    <!-- Left / Branding Section -->
+    <section class="branding-section">
+
+      <div class="brand">
+
+        <div class="brand-icon">
+          <span>SM</span>
+        </div>
+
+        <h1>Store<span>Manager</span></h1>
+
+      </div>
+
+      <div class="branding-content">
+
+        <h2>Manage your store smarter.</h2>
+
+        <p>
+          Keep track of products, inventory, customers,
+          orders and more from one simple platform.
+        </p>
+
+        <div class="feature-list">
+
+          <div class="feature-item">
+            <div class="feature-icon">✓</div>
+
+            <div>
+              <strong>Inventory Management</strong>
+              <span>Track your stock in real time.</span>
+            </div>
+          </div>
+
+          <div class="feature-item">
+            <div class="feature-icon">✓</div>
+
+            <div>
+              <strong>Order Management</strong>
+              <span>Manage orders efficiently.</span>
+            </div>
+          </div>
+
+          <div class="feature-item">
+            <div class="feature-icon">✓</div>
+
+            <div>
+              <strong>Store Insights</strong>
+              <span>Understand your business better.</span>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="branding-footer">
+        © 2026 StoreManager
+      </div>
+
+    </section>
+
+
+    <!-- Signup Section -->
+    <section class="form-section">
+
+      <div class="form-wrapper">
+
+        <div class="form-header">
+
+          <span class="welcome-text">
+            GET STARTED
+          </span>
+
+          <h2>Create your account</h2>
+
+          <p>
+            Create an account to start managing your store.
+          </p>
+
+        </div>
+
+
+        <form
+          [formGroup]="signupForm"
+          (ngSubmit)="submit()"
+          novalidate
+        >
+
+          <!-- First Name & Last Name -->
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="firstName">
+                First Name <span style="color: #ef4444;">*</span>
+              </label>
+
+              <div class="input-wrapper">
+                <span class="input-icon">👤</span>
+                <input
+                  id="firstName"
+                  type="text"
+                  formControlName="firstName"
+                  placeholder="Enter first name"
+                  autocomplete="given-name"
+                />
+              </div>
+
+              @if (firstName.invalid && (firstName.touched || submitted())) {
+                <div class="error-message">
+                  @if (firstName.errors?.['required']) {
+                    <span>First name is required.</span>
+                  }
+                  @if (firstName.errors?.['minlength']) {
+                    <span>Minimum 2 characters required.</span>
+                  }
+                </div>
+              }
+            </div>
+
+            <div class="form-group">
+              <label for="lastName">
+                Last Name
+              </label>
+
+              <div class="input-wrapper">
+                <span class="input-icon">👤</span>
+                <input
+                  id="lastName"
+                  type="text"
+                  formControlName="lastName"
+                  placeholder="Enter last name"
+                  autocomplete="family-name"
+                />
+              </div>
+            </div>
+          </div>
+
+
+          <!-- Email -->
+
+          <div class="form-group">
+            <label for="email">
+              Email <span style="color: #ef4444;">*</span>
+            </label>
+
+            <div class="input-wrapper">
+              <span class="input-icon">✉</span>
+              <input
+                id="email"
+                type="email"
+                formControlName="email"
+                placeholder="Enter your email address"
+                autocomplete="email"
+              />
+            </div>
+
+            @if (email.invalid && (email.touched || submitted())) {
+              <div class="error-message">
+                @if (email.errors?.['required']) {
+                  <span>Email is required.</span>
+                }
+                @if (email.errors?.['email']) {
+                  <span>Please enter a valid email address.</span>
+                }
+              </div>
+            }
+          </div>
+
+
+          <!-- Password -->
+
+          <div class="form-group">
+            <label for="password">
+              Password <span style="color: #ef4444;">*</span>
+            </label>
+
+            <div class="input-wrapper">
+              <span class="input-icon">●</span>
+
+              <input
+                id="password"
+                [type]="showPassword() ? 'text' : 'password'"
+                formControlName="password"
+                placeholder="Enter your password"
+                autocomplete="new-password"
+              />
+
+              <button
+                type="button"
+                class="password-toggle"
+                (click)="togglePassword()"
+                [attr.aria-label]="
+                  showPassword()
+                    ? 'Hide password'
+                    : 'Show password'
+                "
+              >
+                {{ showPassword() ? 'Hide' : 'Show' }}
+              </button>
+            </div>
+
+            @if (password.invalid && (password.touched || submitted())) {
+              <div class="error-message">
+                @if (password.errors?.['required']) {
+                  <span>Password is required.</span>
+                }
+                @if (password.errors?.['minlength']) {
+                  <span>Password must be at least 6 characters.</span>
+                }
+              </div>
+            }
+          </div>
+
+
+          <!-- Confirm Password -->
+
+          <div class="form-group">
+            <label for="confirmPassword">
+              Confirm Password <span style="color: #ef4444;">*</span>
+            </label>
+
+            <div class="input-wrapper">
+              <span class="input-icon">●</span>
+
+              <input
+                id="confirmPassword"
+                [type]="
+                  showConfirmPassword()
+                    ? 'text'
+                    : 'password'
+                "
+                formControlName="confirmPassword"
+                placeholder="Confirm your password"
+                autocomplete="new-password"
+              />
+
+              <button
+                type="button"
+                class="password-toggle"
+                (click)="toggleConfirmPassword()"
+                [attr.aria-label]="
+                  showConfirmPassword()
+                    ? 'Hide password'
+                    : 'Show password'
+                "
+              >
+                {{ showConfirmPassword() ? 'Hide' : 'Show' }}
+              </button>
+            </div>
+
+            @if (
+              confirmPassword.invalid &&
+              (confirmPassword.touched || submitted())
+            ) {
+              <div class="error-message">
+                @if (confirmPassword.errors?.['required']) {
+                  <span>Please confirm your password.</span>
+                }
+              </div>
+            }
+
+            @if (
+              signupForm.errors?.['passwordMismatch'] &&
+              confirmPassword.touched
+            ) {
+              <div class="error-message">
+                Passwords do not match.
+              </div>
+            }
+          </div>
+
+
+          <!-- Submit -->
+
+          <button
+            type="submit"
+            class="signup-button"
+            [disabled]="loading()"
+          >
+
+            @if (loading()) {
+
+              <span class="button-content">
+                <span class="spinner"></span>
+                Creating account...
+              </span>
+
+            } @else {
+
+              <span>
+                Create Account
+              </span>
+
+              <span class="arrow">
+                →
+              </span>
+
+            }
+
+          </button>
+
+
+          <!-- Login -->
+
+          <div class="login-link">
+
+            Already have an account?
+
+            <a routerLink="/signin">
+              Sign in
+            </a>
+
+          </div>
+
+        </form>
+
+      </div>
+
+    </section>
+
+  </div>
+
+</div>

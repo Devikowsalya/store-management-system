@@ -1,0 +1,550 @@
+:host {
+  display: block;
+}
+
+.product-edit-page {
+  width: 100%;
+  max-width: 1100px;
+
+  margin: 0 auto;
+
+  padding: 32px;
+
+  box-sizing: border-box;
+}
+
+
+/* =========================
+   Header
+   ========================= */
+
+.page-header {
+  margin-bottom: 28px;
+}
+
+.back-button {
+  display: inline-flex;
+  align-items: center;
+
+  gap: 7px;
+
+  margin-bottom: 18px;
+
+  padding: 0;
+
+  border: none;
+
+  background: transparent;
+
+  color: #64748b;
+
+  font-size: 12px;
+  font-weight: 600;
+
+  cursor: pointer;
+}
+
+.back-button:hover {
+  color: #2563eb;
+}
+
+.back-button span {
+  font-size: 16px;
+}
+
+.page-label {
+  display: block;
+
+  margin-bottom: 6px;
+
+  color: #2563eb;
+
+  font-size: 10px;
+  font-weight: 700;
+
+  letter-spacing: 1.4px;
+}
+
+.page-heading h1 {
+  margin: 0;
+
+  color: #111827;
+
+  font-size: 30px;
+  font-weight: 700;
+}
+
+.page-heading p {
+  margin: 6px 0 0;
+
+  color: #6b7280;
+
+  font-size: 14px;
+}
+
+
+/* =========================
+   Error Banner
+   ========================= */
+
+.error-banner {
+  display: flex;
+  align-items: center;
+
+  gap: 10px;
+
+  margin-bottom: 20px;
+
+  padding: 12px 14px;
+
+  border: 1px solid #fecaca;
+  border-radius: 9px;
+
+  background: #fef2f2;
+
+  color: #b91c1c;
+
+  font-size: 12px;
+}
+
+.error-icon {
+  width: 20px;
+  height: 20px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  border-radius: 50%;
+
+  background: #fee2e2;
+
+  font-size: 11px;
+  font-weight: 700;
+}
+
+
+/* =========================
+   Form
+   ========================= */
+
+.product-form {
+  display: flex;
+  flex-direction: column;
+
+  gap: 20px;
+}
+
+
+/* =========================
+   Form Card
+   ========================= */
+
+.form-card {
+  background: #ffffff;
+
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+
+  overflow: hidden;
+}
+
+.card-header {
+  padding: 20px 22px;
+
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.card-header h2 {
+  margin: 0;
+
+  color: #111827;
+
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.card-header p {
+  margin: 5px 0 0;
+
+  color: #9ca3af;
+
+  font-size: 11px;
+}
+
+.card-body {
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+
+  gap: 20px;
+
+  padding: 22px;
+}
+
+
+/* =========================
+   Form Fields
+   ========================= */
+
+.form-field {
+  min-width: 0;
+}
+
+.form-field.full-width {
+  grid-column: 1 / -1;
+}
+
+.form-field label {
+  display: block;
+
+  margin-bottom: 7px;
+
+  color: #374151;
+
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.form-field label span {
+  color: #dc2626;
+}
+
+.form-field input,
+.form-field select,
+.form-field textarea {
+  width: 100%;
+
+  box-sizing: border-box;
+
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+
+  outline: none;
+
+  background: #ffffff;
+
+  color: #374151;
+
+  font-family: inherit;
+
+  font-size: 12px;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.form-field input,
+.form-field select {
+  height: 42px;
+
+  padding: 0 12px;
+}
+
+.form-field textarea {
+  display: block;
+
+  padding: 11px 12px;
+
+  resize: vertical;
+}
+
+.form-field input::placeholder,
+.form-field textarea::placeholder {
+  color: #c1c7d0;
+}
+
+.form-field input:focus,
+.form-field select:focus,
+.form-field textarea:focus {
+  border-color: #2563eb;
+
+  box-shadow:
+    0 0 0 3px
+    rgba(37, 99, 235, 0.08);
+}
+
+.form-field input.invalid,
+.form-field select.invalid,
+.form-field textarea.invalid {
+  border-color: #ef4444;
+}
+
+.field-error {
+  display: block;
+
+  margin-top: 5px;
+
+  color: #dc2626;
+
+  font-size: 10px;
+}
+
+
+/* =========================
+   Currency Input
+   ========================= */
+
+.input-with-prefix {
+  position: relative;
+}
+
+.input-with-prefix > span {
+  position: absolute;
+
+  top: 50%;
+  left: 12px;
+
+  transform: translateY(-50%);
+
+  color: #9ca3af;
+
+  font-size: 12px;
+
+  pointer-events: none;
+}
+
+.input-with-prefix input {
+  padding-left: 28px;
+}
+
+
+/* =========================
+   Character Count
+   ========================= */
+
+.character-count {
+  margin-top: 5px;
+
+  text-align: right;
+
+  color: #9ca3af;
+
+  font-size: 10px;
+}
+
+
+/* =========================
+   Toggle
+   ========================= */
+
+.toggle-row {
+  display: flex;
+  align-items: center;
+
+  gap: 12px;
+
+  cursor: pointer;
+}
+
+.toggle-row input {
+  position: absolute;
+
+  opacity: 0;
+
+  pointer-events: none;
+}
+
+.toggle-switch {
+  position: relative;
+
+  width: 42px;
+  height: 23px;
+
+  flex-shrink: 0;
+
+  border-radius: 20px;
+
+  background: #d1d5db;
+
+  transition:
+    background 0.2s ease;
+}
+
+.toggle-switch::after {
+  content: '';
+
+  position: absolute;
+
+  top: 3px;
+  left: 3px;
+
+  width: 17px;
+  height: 17px;
+
+  border-radius: 50%;
+
+  background: #ffffff;
+
+  box-shadow:
+    0 1px 3px
+    rgba(0, 0, 0, 0.15);
+
+  transition:
+    transform 0.2s ease;
+}
+
+.toggle-row input:checked
+  + .toggle-switch {
+  background: #2563eb;
+}
+
+.toggle-row input:checked
+  + .toggle-switch::after {
+  transform: translateX(19px);
+}
+
+.toggle-content {
+  display: flex;
+  flex-direction: column;
+
+  gap: 3px;
+}
+
+.toggle-content strong {
+  color: #374151;
+
+  font-size: 12px;
+}
+
+.toggle-content small {
+  color: #9ca3af;
+
+  font-size: 10px;
+}
+
+
+/* =========================
+   Actions
+   ========================= */
+
+.form-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+
+  gap: 10px;
+
+  padding-top: 4px;
+}
+
+.cancel-button,
+.save-button {
+  height: 42px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 8px;
+
+  padding: 0 18px;
+
+  border-radius: 8px;
+
+  font-size: 12px;
+  font-weight: 600;
+
+  cursor: pointer;
+}
+
+.cancel-button {
+  border: 1px solid #e5e7eb;
+
+  background: #ffffff;
+
+  color: #64748b;
+}
+
+.cancel-button:hover {
+  background: #f8fafc;
+}
+
+.save-button {
+  border: none;
+
+  background: #2563eb;
+
+  color: #ffffff;
+}
+
+.save-button:hover {
+  background: #1d4ed8;
+}
+
+.save-button:disabled,
+.cancel-button:disabled {
+  opacity: 0.6;
+
+  cursor: not-allowed;
+}
+
+
+/* =========================
+   Button Spinner
+   ========================= */
+
+.button-spinner {
+  width: 14px;
+  height: 14px;
+
+  border: 2px solid
+    rgba(255, 255, 255, 0.4);
+
+  border-top-color: #ffffff;
+
+  border-radius: 50%;
+
+  animation:
+    edit-spin 0.7s linear infinite;
+}
+
+@keyframes edit-spin {
+
+  to {
+    transform: rotate(360deg);
+  }
+
+}
+
+
+/* =========================
+   Responsive
+   ========================= */
+
+@media (max-width: 700px) {
+
+  .product-edit-page {
+    padding: 20px;
+  }
+
+  .card-body {
+    grid-template-columns: 1fr;
+  }
+
+  .form-field.full-width {
+    grid-column: auto;
+  }
+
+}
+
+@media (max-width: 480px) {
+
+  .product-edit-page {
+    padding: 16px;
+  }
+
+  .form-actions {
+    flex-direction: column-reverse;
+  }
+
+  .cancel-button,
+  .save-button {
+    width: 100%;
+  }
+
+}

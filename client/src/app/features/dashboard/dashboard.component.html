@@ -1,0 +1,352 @@
+<div class="dashboard">
+
+  <!-- Header -->
+
+  <div class="page-header">
+
+    <div>
+      <span class="page-label">
+        OVERVIEW
+      </span>
+
+      <h1>
+        Dashboard
+      </h1>
+
+      <p>
+        Welcome back. Here's what's happening
+        with your store today.
+      </p>
+    </div>
+
+    <div class="date-card">
+      <span class="date-icon">◷</span>
+
+      <div>
+        <strong>
+          Today
+        </strong>
+
+        <span>
+          Store Overview
+        </span>
+      </div>
+    </div>
+
+  </div>
+
+
+  <!-- Summary Cards -->
+
+  <section class="summary-grid">
+
+    @for (card of cards(); track card.title) {
+
+      <div class="summary-card">
+
+        <div class="card-top">
+
+          <div class="card-icon">
+            {{ card.icon }}
+          </div>
+
+        </div>
+
+        <div class="card-title">
+          {{ card.title }}
+        </div>
+
+        <div class="card-value">
+          {{ card.value }}
+        </div>
+
+        <div class="card-description">
+          {{ card.description }}
+        </div>
+
+      </div>
+
+    }
+
+  </section>
+
+
+  <!-- Main Dashboard Grid -->
+
+  <section class="dashboard-grid">
+
+
+    <!-- Recent Orders -->
+
+    <div class="dashboard-card orders-card">
+
+      <div class="card-header">
+
+        <div>
+          <h2>
+            Recent Orders
+          </h2>
+
+          <p>
+            Latest store orders
+          </p>
+        </div>
+
+        <a [routerLink]="[baseRoute(), 'orders']">
+          View all
+        </a>
+
+      </div>
+
+
+      <div class="table-wrapper">
+
+        <table>
+
+          <thead>
+
+            <tr>
+              <th>Order</th>
+              <th>Customer</th>
+              <th>Amount</th>
+              <th>Status</th>
+            </tr>
+
+          </thead>
+
+          <tbody>
+
+            @for (
+              order of orderStore.ordersSummary();
+              track order.orderID
+            ) {
+
+              <tr>
+
+                <td>
+                  <strong>
+                    {{ order.orderID }}
+                  </strong>
+                </td>
+
+                <td>
+                  {{ order.customerId }}
+
+                </td>
+
+                <td>
+                  {{ order.totalAmount }}
+                </td>
+
+                <td>
+
+                  <span class="status completed">
+                    Completed
+                  </span>
+
+                </td>
+
+              </tr>
+
+            }
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    </div>
+
+
+    <!-- Low Stock -->
+
+    <div class="dashboard-card stock-card">
+
+      <div class="card-header">
+
+        <div>
+          <h2>
+            Low Stock
+          </h2>
+
+          <p>
+              {{ productStore.totalLowStockProducts() }} items need attention
+          </p>
+        </div>
+
+        <a [routerLink]="[baseRoute(), 'products']">
+          View all
+        </a>
+
+      </div>
+
+
+      <div class="stock-list">
+
+      @for (
+        product of productStore.lowStockProducts();
+        track product.productID
+      ) {
+
+          <div class="stock-item">
+
+            <div class="stock-product">
+
+              <div class="product-icon">
+                ▣
+              </div>
+
+              <div>
+
+                <strong>
+                  {{ product.productName }}
+                </strong>
+
+                <span>
+                  {{ product.stock }} units remaining
+                </span>
+
+              </div>
+
+            </div>
+
+          @if (product.stock <= 5) {
+
+          <span class="stock-status critical">
+            Critical
+          </span>
+
+        } @else if (product.stock <= 10) {
+
+          <span class="stock-status low">
+            Low
+          </span>
+
+        }
+
+          </div>
+
+        }
+
+      </div>
+
+    </div>
+
+
+    <!-- Product Categories -->
+
+    <!-- <div class="dashboard-card categories-card">
+
+      <div class="card-header">
+
+        <div>
+          <h2>
+            Categories
+          </h2>
+
+          <p>
+            {{ categoryStore.categoryCount() }} product categories
+          </p>
+        </div>
+
+        <a [routerLink]="[baseRoute(), 'categories']">
+          View all
+        </a>
+
+      </div>
+
+
+      <div class="stock-list">
+
+        @for (
+          category of categoryStore.categories();
+          track category.categoryID
+        ) {
+
+          <div class="stock-item">
+
+            <div class="stock-product">
+
+              <div class="product-icon">
+                ▦
+              </div>
+
+              <div>
+
+                <strong>
+                  {{ category.categoryName }}
+                </strong>
+
+                <span>
+                  {{ category.productCount || 0 }} products
+                </span>
+
+              </div>
+
+            </div>
+
+            <span
+              class="stock-status"
+              [class.low]="category.isActive"
+              [class.critical]="!category.isActive"
+            >
+              {{ category.isActive ? 'Active' : 'Inactive' }}
+            </span>
+
+          </div>
+
+        } @empty {
+
+          <div class="empty-state">
+            No categories available
+          </div>
+
+        }
+
+      </div>
+
+    </div> -->
+
+  </section>
+
+
+  <!-- Bottom Section -->
+
+  <section class="quick-actions">
+
+    <h2>
+      Quick Actions
+    </h2>
+
+    <div class="action-grid">
+
+      <a [routerLink]="[baseRoute(), 'products', 'create']" class="action-card">
+        <span class="action-icon">+</span>
+        <div>
+          <strong>Add Product</strong>
+          <span>Create a new product</span>
+        </div>
+      </a>
+
+      <a [routerLink]="[baseRoute(), 'categories']" class="action-card">
+        <span class="action-icon">+</span>
+        <div>
+          <strong>Categories</strong>
+          <span>Browse product categories</span>
+        </div>
+      </a>
+
+      <a [routerLink]="[baseRoute(), 'orders']" class="action-card">
+        <span class="action-icon">+</span>
+        <div>
+          <strong>Create Order</strong>
+          <span>Create a new order</span>
+        </div>
+      </a>
+
+    </div>
+
+  </section>
+
+</div>

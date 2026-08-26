@@ -1,0 +1,232 @@
+<div class="user-form-page">
+
+  <!-- =========================
+       Page Header
+       ========================= -->
+  <div class="page-header">
+    <div class="page-heading">
+      <button type="button" class="back-button" (click)="cancel()">
+        <span>←</span>
+        Back to Users
+      </button>
+
+      <span class="page-label">
+        USER MANAGEMENT
+      </span>
+
+      <h1>
+        @if (isEditMode()) {
+          Edit User
+        } @else {
+          Add User
+        }
+      </h1>
+
+      <p>
+        @if (isEditMode()) {
+          Update user details, role permissions, and active status.
+        } @else {
+          Create a new user account with role and department assignments.
+        }
+      </p>
+    </div>
+  </div>
+
+  <!-- =========================
+       Error Message
+       ========================= -->
+  @if (errorMessage()) {
+    <div class="error-banner">
+      <span class="error-icon">!</span>
+      <span>{{ errorMessage() }}</span>
+    </div>
+  }
+
+  <!-- =========================
+       Loading State
+       ========================= -->
+  @if (isLoading()) {
+    <div class="loading-state">
+      <div class="spinner"></div>
+      <span>Loading user details...</span>
+    </div>
+  } @else {
+    <!-- =========================
+         User Form
+         ========================= -->
+    <form class="user-form" [formGroup]="userForm" (ngSubmit)="saveUser()">
+
+      <!-- Basic Information Card -->
+      <section class="form-card">
+        <div class="card-header">
+          <div>
+            <h2>Basic Information</h2>
+            <p>Enter the user's profile and contact details.</p>
+          </div>
+        </div>
+
+        <div class="card-body">
+             <div class="form-field full-width">
+            <label for="userName">
+              User Name <span></span>
+            </label>
+            <input
+              id="userName"
+              type="text"
+              formControlName="userName"
+              placeholder="e.g. John Doe"
+              [class.invalid]="isFieldInvalid('userName')"
+            />
+            <!-- @if (isFieldInvalid('userName')) {
+              <small class="field-error">
+                @if (userForm.controls.userName.errors?.['required']) {
+                  Full name is required.
+                } @else if (userForm.controls.userName.errors?.['minlength']) {
+                  Full name must be at least 2 characters.
+                }
+              </small>
+            } -->
+          </div>
+          <!-- Full Name -->
+          <div class="form-field full-width">
+            <label for="fullName">
+              Full Name <span>*</span>
+            </label>
+            <input
+              id="fullName"
+              type="text"
+              formControlName="fullName"
+              placeholder="e.g. John Doe"
+              [class.invalid]="isFieldInvalid('fullName')"
+            />
+            @if (isFieldInvalid('fullName')) {
+              <small class="field-error">
+                @if (userForm.controls.fullName.errors?.['required']) {
+                  Full name is required.
+                } @else if (userForm.controls.fullName.errors?.['minlength']) {
+                  Full name must be at least 2 characters.
+                }
+              </small>
+            }
+          </div>
+
+          <!-- Email -->
+          <div class="form-field">
+            <label for="email">
+              Email Address <span>*</span>
+            </label>
+            <input
+              id="email"
+              type="email"
+              formControlName="email"
+              placeholder="john.doe@company.com"
+              [class.invalid]="isFieldInvalid('email')"
+            />
+            @if (isFieldInvalid('email')) {
+              <small class="field-error">
+                @if (userForm.controls.email.errors?.['required']) {
+                  Email address is required.
+                } @else if (userForm.controls.email.errors?.['email']) {
+                  Please enter a valid email address.
+                }
+              </small>
+            }
+          </div>
+
+          <!-- Phone -->
+          <!-- <div class="form-field">
+            <label for="phone">
+              Phone Number
+            </label>
+            <input
+              id="phone"
+              type="tel"
+              formControlName="phone"
+              placeholder="+1 (555) 000-0000"
+            />
+          </div> -->
+
+          <!-- Role -->
+          <div class="form-field">
+            <label for="role">
+              User Role <span>*</span>
+            </label>
+            <select
+              id="role"
+              formControlName="role"
+              [class.invalid]="isFieldInvalid('role')"
+            >
+              @for (r of roles; track r) {
+                <option [value]="r">{{ r }}</option>
+              }
+            </select>
+            @if (isFieldInvalid('role')) {
+              <small class="field-error">Role is required.</small>
+            }
+          </div>
+
+          <!-- Department -->
+          <!-- <div class="form-field">
+            <label for="department">
+              Department
+            </label>
+            <input
+              id="department"
+              type="text"
+              formControlName="department"
+              placeholder="e.g. Sales, IT, Operations"
+            />
+          </div> -->
+        </div>
+      </section>
+
+      <!-- Account Status Card -->
+      <section class="form-card">
+        <div class="card-header">
+          <div>
+            <h2>Account Status</h2>
+            <p>Enable or disable access for this user account.</p>
+          </div>
+        </div>
+
+        <div class="card-body">
+          <label class="toggle-row">
+            <input type="checkbox" formControlName="isActive" />
+            <span class="toggle-switch"></span>
+            <span class="toggle-content">
+              <strong>Active Account</strong>
+              <small>Active users can log in and access system resources.</small>
+            </span>
+          </label>
+        </div>
+      </section>
+
+      <!-- Form Actions -->
+      <div class="form-actions">
+        <button
+          type="button"
+          class="cancel-button"
+          (click)="cancel()"
+          [disabled]="isSaving()"
+        >
+          Cancel
+        </button>
+
+        <button
+          type="submit"
+          class="save-button"
+          [disabled]="isSaving()"
+        >
+          @if (isSaving()) {
+            <span class="button-spinner"></span>
+            {{ isEditMode() ? 'Saving Changes...' : 'Adding User...' }}
+          } @else {
+            <span>{{ isEditMode() ? '✓' : '+' }}</span>
+            {{ isEditMode() ? 'Save Changes' : 'Add User' }}
+          }
+        </button>
+      </div>
+
+    </form>
+  }
+</div>

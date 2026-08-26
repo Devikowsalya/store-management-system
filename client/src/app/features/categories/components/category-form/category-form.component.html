@@ -1,0 +1,203 @@
+<div class="category-form">
+
+
+  <!-- Header -->
+
+  <div class="form-header">
+
+    <div>
+
+      <span class="form-label">
+        CATEGORY MANAGEMENT
+      </span>
+
+      <h2>
+
+        @if (mode() === 'create') {
+          Add Category
+        } @else {
+          Edit Category
+        }
+
+      </h2>
+
+      <p>
+
+        @if (mode() === 'create') {
+          Create a new product category.
+        } @else {
+          Update category information.
+        }
+
+      </p>
+
+    </div>
+
+
+    <button
+      type="button"
+      class="close-button"
+      aria-label="Close"
+      (click)="cancel()"
+    >
+      ×
+    </button>
+
+  </div>
+
+
+  <!-- Form -->
+
+  <form
+    [formGroup]="form"
+    (ngSubmit)="submit()"
+  >
+
+    <div class="form-body">
+
+
+      <!-- Category Name -->
+
+      <div class="form-field">
+
+        <label for="categoryName">
+
+          Category Name
+
+          <span class="required">
+            *
+          </span>
+
+        </label>
+
+
+        <input
+          id="categoryName"
+          type="text"
+          formControlName="categoryName"
+          placeholder="Enter category name"
+          autocomplete="off"
+          [class.invalid]="
+            categoryName.invalid &&
+            categoryName.touched
+          "
+        />
+
+
+        @if (
+          categoryName.invalid &&
+          categoryName.touched
+        ) {
+
+          <div class="field-error">
+
+            @if (
+              categoryName.errors?.['required']
+            ) {
+
+              Category name is required.
+
+            }
+
+            @else if (
+              categoryName.errors?.['minlength']
+            ) {
+
+              Category name must contain
+              at least 2 characters.
+
+            }
+
+            @else if (
+              categoryName.errors?.['maxlength']
+            ) {
+
+              Category name cannot exceed
+              100 characters.
+
+            }
+
+          </div>
+
+        }
+
+      </div>
+
+
+      <!-- Active -->
+
+      <div class="status-section">
+
+        <div class="status-content">
+
+          <strong>
+            Active Category
+          </strong>
+
+          <span>
+            Products can be assigned to this category.
+          </span>
+
+        </div>
+
+
+        <label class="toggle">
+
+          <input
+            type="checkbox"
+            formControlName="isActive"
+          />
+
+          <span class="toggle-track"></span>
+
+        </label>
+
+      </div>
+
+    </div>
+
+
+    <!-- Actions -->
+
+    <div class="form-actions">
+
+      <button
+        type="button"
+        class="cancel-button"
+        (click)="cancel()"
+      >
+        Cancel
+      </button>
+
+
+      <button
+        type="submit"
+        class="save-button"
+        [disabled]="isSaving()"
+      >
+
+        @if (mode() === 'create') {
+
+          <span class="button-icon">
+            +
+          </span>
+
+          Create Category
+
+        } @else {
+
+          <span class="button-icon">
+            ✓
+          </span>
+
+          Save Changes
+
+        }
+
+      </button>
+
+    </div>
+
+  </form>
+
+</div>
