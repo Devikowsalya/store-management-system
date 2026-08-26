@@ -1,0 +1,211 @@
+<div class="category-page">
+  <!-- Page Header -->
+
+  <div class="page-header">
+    <div>
+      <span class="page-label"> STORE MANAGEMENT </span>
+
+      <h1>Categories</h1>
+
+      <p>Organize products into manageable categories.</p>
+    </div>
+
+    @if (isAdmin()) {
+      <button type="button" class="primary-button" (click)="createCategory()">
+        <span class="button-icon"> + </span>
+
+        Add Category
+      </button>
+    }
+  </div>
+
+  <!-- Summary -->
+
+  <section class="summary-grid">
+    <div class="summary-card">
+      <span class="summary-label"> Total Categories </span>
+
+      <strong>
+        {{ categories().length }}
+      </strong>
+
+      <span class="summary-description"> Categories available </span>
+    </div>
+
+    <div class="summary-card">
+      <span class="summary-label"> Active Categories </span>
+
+      <strong>
+        {{ activeCategoryCount() }}
+      </strong>
+
+      <span class="summary-description"> Currently active </span>
+    </div>
+
+    <div class="summary-card">
+      <span class="summary-label"> Total Products </span>
+
+      <strong>
+        {{ totalProducts() }}
+      </strong>
+
+      <span class="summary-description"> Across all categories </span>
+    </div>
+  </section>
+
+  <!-- Category List -->
+
+  <section class="category-card">
+    <div class="category-toolbar">
+      <div class="toolbar-left">
+        <h2>Category List</h2>
+
+        <span class="category-count">
+          {{ categoryCount() }}
+        </span>
+      </div>
+
+      <div class="search-box">
+        <span class="search-icon"> ⌕ </span>
+
+        <input
+          type="search"
+          placeholder="Search categories..."
+          [value]="searchTerm()"
+          (input)="onSearch($event)"
+        />
+
+        @if (searchTerm()) {
+          <button
+            type="button"
+            class="clear-search"
+            aria-label="Clear search"
+            (click)="clearSearch()"
+          >
+            ×
+          </button>
+        }
+      </div>
+    </div>
+
+    @if (isLoading()) {
+      <div class="loading-state">
+        <div class="spinner"></div>
+
+        Loading categories...
+      </div>
+
+    } @else if (filteredCategories().length === 0) {
+      <div class="empty-state">
+        <div class="empty-icon">▦</div>
+
+        <h3>No categories found</h3>
+
+        <p>Try changing your search or create a new category.</p>
+
+        @if (isAdmin()) {
+          <button type="button" class="primary-button" (click)="createCategory()">
+            Add Category
+          </button>
+        }
+      </div>
+
+    } @else {
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Category</th>
+
+              <th>Products</th>
+
+              <th>Status</th>
+
+              @if (isAdmin()) {
+                <th class="actions-column">Actions</th>
+              }
+            </tr>
+          </thead>
+
+          <tbody>
+            @for (category of filteredCategories(); track category.categoryID) {
+              <tr>
+                <td>
+                  <div class="category-info">
+                    <div class="category-icon">▦</div>
+
+                    <div>
+                      <strong>
+                        {{ category.categoryName }}
+                      </strong>
+
+                      <span> #{{ category.categoryID }} </span>
+                    </div>
+                  </div>
+                </td>
+
+                <td>
+                  <span class="product-count">
+                    {{ category.productCount }}
+                  </span>
+
+                  products
+                </td>
+
+                <td>
+                  @if (category.isActive) {
+                    <span class="status active"> Active </span>
+                  } @else {
+                    <span class="status inactive"> Inactive </span>
+                  }
+                </td>
+
+                @if (isAdmin()) {
+                  <td>
+                    <div class="actions">
+                      <button
+                        type="button"
+                        class="icon-button"
+                        title="Edit category"
+                        (click)="editCategory(category)"
+                      >
+                        ✎
+                      </button>
+
+                      <button
+                        type="button"
+                        class="icon-button delete"
+                        title="Delete category"
+                        (click)="deleteCategory(category)"
+                      >
+                        ×
+                      </button>
+                    </div>
+                  </td>
+                }
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </section>
+</div>
+
+
+@if (isModalOpen()) {
+
+  <app-modal
+    (closed)="closeModal()"
+  >
+
+    <app-category-form
+      [mode]="formMode()"
+      [category]="selectedCategory()"
+      (saved)="saveCategory($event)"
+      (cancelled)="closeModal()"
+    />
+
+  </app-modal>
+
+}

@@ -1,0 +1,146 @@
+<aside
+  class="sidebar"
+  [class.collapsed]="collapsed()"
+>
+
+  <!-- Logo -->
+
+  <div class="sidebar-brand">
+
+    <div class="brand-icon">
+      SM
+    </div>
+
+    @if (!collapsed()) {
+      <div class="brand-name">
+        Store<span>Manager</span>
+      </div>
+    }
+
+  </div>
+
+
+  <!-- Toggle -->
+
+  <button
+    type="button"
+    class="toggle-button"
+    (click)="toggle()"
+    [attr.aria-label]="
+      collapsed()
+        ? 'Expand sidebar'
+        : 'Collapse sidebar'
+    "
+  >
+
+    <span>
+      {{ collapsed() ? '›' : '‹' }}
+    </span>
+
+  </button>
+
+
+  <!-- Navigation -->
+
+  <nav class="sidebar-nav">
+
+    <div class="nav-section">
+
+      @if (!collapsed()) {
+        <span class="section-title">
+          MAIN MENU
+        </span>
+      }
+
+      @for (item of menuItems(); track item.route) {
+
+        <a
+          class="nav-item"
+          [class]="item.class"
+          [routerLink]="item.route"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{
+            exact: true
+          }"
+          [attr.title]="
+            collapsed()
+              ? item.label
+              : null
+          "
+        >
+
+          <span class="nav-icon">
+            {{ item.icon }}
+          </span>
+
+          @if (!collapsed()) {
+            <span class="nav-label">
+              {{ item.label }}
+            </span>
+
+            @if (item.badge !== undefined && item.badge > 0) {
+              <span class="nav-badge">{{ item.badge }}</span>
+            }
+          }
+        </a>
+
+      }
+
+    </div>
+
+  </nav>
+
+
+  <!-- Bottom -->
+
+  <div class="sidebar-bottom">
+
+    <button
+      type="button"
+      class="bottom-item"
+      [attr.title]="
+        collapsed()
+          ? 'Settings'
+          : null
+      "
+    >
+
+      <span class="nav-icon">
+        ⚙
+      </span>
+
+      @if (!collapsed()) {
+        <span class="nav-label">
+          Settings
+        </span>
+      }
+
+    </button>
+
+
+    <button
+      type="button"
+      class="bottom-item logout"
+      (click)="logout()"
+      [attr.title]="
+        collapsed()
+          ? 'Logout'
+          : null
+      "
+    >
+
+      <span class="nav-icon">
+        ⇥
+      </span>
+
+      @if (!collapsed()) {
+        <span class="nav-label">
+          Logout
+        </span>
+      }
+
+    </button>
+
+  </div>
+
+</aside>

@@ -1,0 +1,451 @@
+<div class="product-page">
+  <!-- Page Header -->
+
+  <div class="page-header">
+    <div class="page-heading">
+      <span class="page-label"> STORE MANAGEMENT </span>
+
+      <h1>Products</h1>
+
+      <p>Manage your products, pricing and stock.</p>
+    </div>
+
+    @if (isAdmin()) {
+      <button type="button" class="primary-button" (click)="addProduct()">
+        <span class="button-icon"> + </span>
+        <span> Add Product </span>
+      </button>
+    }
+  </div>
+
+  <!-- Product Card -->
+
+  <section class="product-card">
+    <!-- Toolbar -->
+
+    <div class="product-toolbar">
+      <div class="toolbar-left">
+        <h2>Product List</h2>
+
+        <span class="product-count">
+          {{ productCount() }}
+        </span>
+      </div>
+
+      <div class="toolbar-right">
+        <!-- Search -->
+
+        <div class="search-box">
+          <span class="search-icon"> ⌕ </span>
+
+          <input
+            type="search"
+            placeholder="Search products..."
+            [value]="searchTerm()"
+            (input)="onSearch($event)"
+          />
+
+          @if (searchTerm()) {
+            <button
+              type="button"
+              class="clear-search"
+              (click)="clearSearch()"
+              aria-label="Clear search"
+            >
+              ×
+            </button>
+          }
+        </div>
+
+        <!-- Filter -->
+
+        <button
+          type="button"
+          class="secondary-button filter-toggle-btn"
+          [class.active]="isFilterOpen() || hasActiveFilters()"
+          (click)="toggleFilterPanel()"
+        >
+          <span>⚙</span>
+          Filters
+          @if (activeFilterCount() > 0) {
+            <span class="filter-count-badge">{{ activeFilterCount() }}</span>
+          }
+        </button>
+      </div>
+    </div>
+
+    <!-- Expandable Filter Panel -->
+    @if (isFilterOpen()) {
+      <div class="filter-panel">
+        <div class="filter-panel-header">
+          <div class="panel-title">
+            <span class="panel-icon">⚙</span>
+            <span>Filter Products</span>
+          </div>
+          @if (hasActiveFilters()) {
+            <button type="button" class="reset-link-btn" (click)="resetFilters()">
+              Reset All Filters
+            </button>
+          }
+        </div>
+
+        <div class="filter-grid">
+          <!-- Category Filter -->
+          <div class="filter-group">
+            <label for="categoryFilter">Category</label>
+            <select id="categoryFilter" [value]="selectedCategoryId()" (change)="onCategoryChange($event)">
+              <option value="all">All Categories</option>
+              @for (cat of categories(); track cat.categoryID) {
+                <option [value]="cat.categoryID">{{ cat.categoryName }}</option> 
+              }
+            </select>
+          </div>
+
+          <!-- Supplier Filter -->
+          <div class="filter-group">
+            <label for="supplierFilter">Supplier</label>
+            <select id="supplierFilter" [value]="selectedSupplierId()" (change)="onSupplierChange($event)">
+              <option value="all">All Suppliers</option>
+              @for (sup of suppliers(); track sup.supplierID) {
+                <option [value]="sup.supplierID">{{ sup.supplierName }}</option>
+              }
+            </select>
+          </div>
+
+          <!-- Price Range Filter -->
+          <div class="filter-group">
+            <label>Price Range (₹)</label>
+            <div class="price-inputs">
+              <input
+                type="number"
+                placeholder="Min"
+                min="0"
+                [value]="minPrice() ?? ''"
+                (input)="onMinPriceChange($event)"
+              />
+              <span class="range-dash">-</span>
+              <input
+                type="number"
+                placeholder="Max"
+                min="0"
+                [value]="maxPrice() ?? ''"
+                (input)="onMaxPriceChange($event)"
+              />
+            </div>
+          </div>
+
+          <!-- Stock Status Filter -->
+          <div class="filter-group">
+            <label for="stockFilter">Stock Availability</label>
+            <select id="stockFilter" [value]="stockStatus()" (change)="onStockStatusChange($event)">
+              <option value="all">All Stock Levels</option>
+              <option value="in_stock">In Stock (> 5)</option>
+              <option value="low_stock">Low Stock (1 - 5)</option>
+              <option value="out_of_stock">Out of Stock (0)</option>
+            </select>
+          </div>
+
+          <!-- Status Filter -->
+          <div class="filter-group">
+            <label for="statusFilter">Product Status</label>
+            <select id="statusFilter" [value]="activeStatus()" (change)="onActiveStatusChange($event)">
+              <option value="all">All Statuses</option>
+              <option value="active">Active Only</option>
+              <option value="inactive">Inactive Only</option>
+            </select>
+          </div>
+
+          <!-- Sort By -->
+          <div class="filter-group">
+            <label for="sortByFilter">Sort By</label>
+            <select id="sortByFilter" [value]="sortBy()" (change)="onSortByChange($event)">
+              <option value="default">Default Order</option>
+              <option value="name_asc">Name: A to Z</option>
+              <option value="name_desc">Name: Z to A</option>
+              <option value="price_asc">Price: Low to High</option>
+              <option value="price_desc">Price: High to Low</option>
+              <option value="stock_desc">Stock: High to Low</option>
+              <option value="stock_asc">Stock: Low to High</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    }
+
+    <!-- Active Filter Chips Bar -->
+    @if (hasActiveFilters()) {
+      <div class="active-filters-bar">
+        <span class="active-filters-label">Active Filters:</span>
+        <div class="filter-chips">
+          @if (selectedCategoryId() !== 'all') {
+            <span class="filter-chip">
+              Category: {{ selectedCategoryName() }}
+              <button type="button" (click)="clearCategory()">×</button>
+            </span>
+          }
+          @if (selectedSupplierId() !== 'all') {
+            <span class="filter-chip">
+              Supplier: {{ selectedSupplierName() }}
+              <button type="button" (click)="clearSupplier()">×</button>
+            </span>
+          }
+          @if (minPrice() !== null || maxPrice() !== null) {
+            <span class="filter-chip">
+              Price: {{ minPrice() !== null ? '₹' + minPrice() : '₹0' }} -
+              {{ maxPrice() !== null ? '₹' + maxPrice() : 'Any' }}
+              <button type="button" (click)="clearPriceRange()">×</button>
+            </span>
+          }
+          @if (stockStatus() !== 'all') {
+            <span class="filter-chip">
+              Stock:
+              {{
+                stockStatus() === 'in_stock'
+                  ? 'In Stock'
+                  : stockStatus() === 'low_stock'
+                    ? 'Low Stock'
+                    : 'Out of Stock'
+              }}
+              <button type="button" (click)="clearStockStatus()">×</button>
+            </span>
+          }
+          @if (sortBy() !== 'default') {
+            <span class="filter-chip">
+              Sort: {{ sortBy() }}
+              <button type="button" (click)="clearSort()">×</button>
+            </span>
+          }
+          <button type="button" class="clear-all-btn" (click)="resetFilters()">Clear All</button>
+        </div>
+      </div>
+    }
+
+    <!-- Loading -->
+
+    @if (isLoading()) {
+      <div class="loading-state">
+        <div class="spinner"></div>
+
+        <span> Loading products... </span>
+      </div>
+    }
+
+    <!-- Empty State -->
+
+    @else if (filteredProducts().length === 0) {
+      <div class="empty-state">
+        <div class="empty-icon">▣</div>
+
+        <h3>No products found</h3>
+
+        <p>No products match your current search query or selected filters.</p>
+
+        <div class="empty-actions">
+          @if (hasActiveFilters() || searchTerm()) {
+            <button type="button" class="secondary-button" (click)="resetFilters(); clearSearch()">
+              Clear Filters & Search
+            </button>
+          }
+          @if (isAdmin()) {
+            <button type="button" class="primary-button" (click)="addProduct()">Add Product</button>
+          }
+        </div>
+      </div>
+    }
+
+    <!-- Product Table -->
+
+    @else {
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Product</th>
+
+              <th>Category</th>
+
+              <th>Supplier</th>
+
+              <th>Price</th>
+
+              <th>Stock</th>
+
+              <th>Status</th>
+
+              <th class="actions-column">
+                {{ isAdmin() ? 'Actions' : 'Cart' }}
+              </th>
+            </tr>
+          </thead>
+
+          <tbody>
+            @for (product of filteredProducts(); track product.productID) {
+              <tr>
+                <!-- Product -->
+
+                <td>
+                  <div class="product-info">
+                    <div class="product-image">▣</div>
+
+                    <div class="product-details">
+                      <strong>
+                        {{ product.productName }}
+                      </strong>
+
+                      <span> #{{ product.productID }} </span>
+                    </div>
+                  </div>
+                </td>
+
+                <!-- Category -->
+
+                <td>
+                  <span class="category-badge">
+                    {{ product.categoryName }}
+                  </span>
+                </td>
+
+                <!-- Supplier -->
+
+                <td>
+                  {{ product.supplierName }}
+                </td>
+
+                <!-- Price -->
+
+                <td>
+                  <strong class="price">
+                    {{ product.price | currency: 'INR' : 'symbol' : '1.0-0' }}
+                  </strong>
+                </td>
+
+                <!-- Stock -->
+
+                <td>
+                  <span
+                    class="stock-value"
+                    [class.low-stock]="product.stock <= 5"
+                    [class.medium-stock]="product.stock > 5 && product.stock <= 10"
+                  >
+                    {{ product.stock }}
+                  </span>
+                </td>
+
+                <!-- Status -->
+
+                <td>
+                  @if (product.isActive) {
+                    <span class="status active"> Active </span>
+                  } @else {
+                    <span class="status inactive"> Inactive </span>
+                  }
+                </td>
+
+                <!-- Actions -->
+
+                <td>
+                  @if (isAdmin()) {
+                    <div class="actions">
+                      <button type="button" class="icon-button" title="View product">◉</button>
+                      <button
+                        type="button"
+                        class="icon-button"
+                        title="Edit product"
+                        (click)="editProduct(product)"
+                      >
+                        ✎
+                      </button>
+                      <button type="button" class="icon-button delete" title="Delete product">
+                        ×
+                      </button>
+                    </div>
+                  } @else {
+                    <div class="cart-action-cell">
+                      @if (getCartQuantity(product.productID) === 0) {
+                        <button
+                          type="button"
+                          class="add-cart-btn"
+                          (click)="addToCart(product)"
+                          [disabled]="!product.isActive || product.stock <= 0"
+                        >
+                          <span>🛒 Add to Cart</span>
+                        </button>
+                      } @else {
+                        <div class="quantity-control">
+                          <button
+                            type="button"
+                            class="qty-btn"
+                            (click)="decrementQuantity(product.productID)"
+                            title="Decrease quantity"
+                          >
+                            -
+                          </button>
+                          <span class="qty-display">{{ getCartQuantity(product.productID) }}</span>
+                          <button
+                            type="button"
+                            class="qty-btn"
+                            (click)="incrementQuantity(product.productID)"
+                            [disabled]="getCartQuantity(product.productID) >= product.stock"
+                            title="Increase quantity"
+                          >
+                            +
+                          </button>
+                        </div>
+                      }
+                    </div>
+                  }
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+
+    <!-- Pagination Footer -->
+    <div class="pagination-footer">
+      <div class="pagination-left">
+        <span class="pagination-info">
+          Page <strong>{{ pageNumber() }}</strong> of <strong>{{ totalPages() }}</strong>
+          @if (totalCount() > 0) {
+            <span class="total-count">({{ totalCount() }} items total)</span>
+          }
+        </span>
+
+        <div class="page-size-selector">
+          <label for="pageSizeSelect">Items per page:</label>
+          <select id="pageSizeSelect" [value]="pageSize()" (change)="onPageSizeChange($event)">
+            <option [value]="5">5</option>
+            <option [value]="10">10</option>
+            <option [value]="20">20</option>
+            <option [value]="50">50</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="pagination-controls">
+        <button
+          type="button"
+          class="page-btn"
+          [disabled]="pageNumber() <= 1 || isLoading()"
+          (click)="previousPage()"
+          title="Previous Page"
+        >
+          ‹ Previous
+        </button>
+
+        <span class="page-badge">{{ pageNumber() }}</span>
+
+        <button
+          type="button"
+          class="page-btn"
+          [disabled]="!hasMorePages() || isLoading()"
+          (click)="nextPage()"
+          title="Next Page"
+        >
+          Next ›
+        </button>
+      </div>
+    </div>
+  </section>
+</div>

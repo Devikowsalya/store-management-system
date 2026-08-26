@@ -1,0 +1,641 @@
+/* =========================
+   Product Form Page
+   ========================= */
+
+.product-form-page {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 32px;
+  box-sizing: border-box;
+}
+
+
+/* =========================
+   Page Header
+   ========================= */
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 28px;
+}
+
+.page-heading {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.back-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  padding: 0;
+  margin-bottom: 20px;
+
+  border: none;
+  background: transparent;
+
+  color: #64748b;
+  font-size: 14px;
+  font-weight: 500;
+
+  cursor: pointer;
+
+  transition: color 0.2s ease;
+
+  span {
+    font-size: 18px;
+  }
+
+  &:hover {
+    color: #2563eb;
+  }
+}
+
+.page-label {
+  display: inline-block;
+
+  margin-bottom: 8px;
+
+  color: #2563eb;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+}
+
+.page-heading h1 {
+  margin: 0 0 8px;
+
+  color: #0f172a;
+  font-size: 30px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.page-heading p {
+  margin: 0;
+
+  color: #64748b;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+
+/* =========================
+   Error Banner
+   ========================= */
+
+.error-banner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  margin-bottom: 24px;
+  padding: 14px 16px;
+
+  border: 1px solid #fecaca;
+  border-radius: 10px;
+
+  background: #fef2f2;
+
+  color: #b91c1c;
+  font-size: 14px;
+}
+
+.error-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 22px;
+  height: 22px;
+
+  flex-shrink: 0;
+
+  border-radius: 50%;
+
+  background: #dc2626;
+  color: #ffffff;
+
+  font-size: 13px;
+  font-weight: 700;
+}
+
+
+/* =========================
+   Loading State
+   ========================= */
+
+.loading-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+
+  min-height: 250px;
+
+  color: #64748b;
+  font-size: 14px;
+}
+
+.spinner,
+.button-spinner {
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+.spinner {
+  width: 26px;
+  height: 26px;
+
+  border: 3px solid #e2e8f0;
+  border-top-color: #2563eb;
+}
+
+.button-spinner {
+  width: 16px;
+  height: 16px;
+
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-top-color: #ffffff;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
+/* =========================
+   Product Form
+   ========================= */
+
+.product-form {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+
+/* =========================
+   Form Card
+   ========================= */
+
+.form-card {
+  overflow: hidden;
+
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+
+  background: #ffffff;
+
+  box-shadow:
+    0 1px 2px rgba(15, 23, 42, 0.03),
+    0 4px 12px rgba(15, 23, 42, 0.03);
+}
+
+.card-header {
+  padding: 20px 24px;
+
+  border-bottom: 1px solid #e2e8f0;
+
+  background: #ffffff;
+}
+
+.card-header h2 {
+  margin: 0 0 5px;
+
+  color: #0f172a;
+  font-size: 17px;
+  font-weight: 650;
+}
+
+.card-header p {
+  margin: 0;
+
+  color: #64748b;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+
+/* =========================
+   Card Body
+   ========================= */
+
+.card-body {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 22px;
+
+  padding: 24px;
+}
+
+
+/* =========================
+   Form Fields
+   ========================= */
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  min-width: 0;
+}
+
+.form-field.full-width {
+  grid-column: 1 / -1;
+}
+
+.form-field label {
+  color: #334155;
+  font-size: 13px;
+  font-weight: 600;
+
+  span {
+    color: #dc2626;
+  }
+}
+
+.form-field input,
+.form-field select,
+.form-field textarea {
+  width: 100%;
+  box-sizing: border-box;
+
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+
+  background: #ffffff;
+
+  color: #0f172a;
+
+  font-family: inherit;
+  font-size: 14px;
+
+  outline: none;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.form-field input,
+.form-field select {
+  height: 42px;
+  padding: 0 12px;
+}
+
+.form-field textarea {
+  min-height: 120px;
+  padding: 12px;
+
+  resize: vertical;
+  line-height: 1.5;
+}
+
+.form-field input::placeholder,
+.form-field textarea::placeholder {
+  color: #94a3b8;
+}
+
+.form-field input:hover,
+.form-field select:hover,
+.form-field textarea:hover {
+  border-color: #94a3b8;
+}
+
+.form-field input:focus,
+.form-field select:focus,
+.form-field textarea:focus {
+  border-color: #2563eb;
+
+  box-shadow:
+    0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+
+/* =========================
+   Select
+   ========================= */
+
+.form-field select {
+  cursor: pointer;
+}
+
+
+/* =========================
+   Invalid Fields
+   ========================= */
+
+.form-field input.invalid,
+.form-field select.invalid,
+.form-field textarea.invalid {
+  border-color: #dc2626;
+
+  background: #fffafa;
+}
+
+.form-field input.invalid:focus,
+.form-field select.invalid:focus,
+.form-field textarea.invalid:focus {
+  box-shadow:
+    0 0 0 3px rgba(220, 38, 38, 0.1);
+}
+
+.field-error {
+  display: block;
+
+  color: #dc2626;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+
+/* =========================
+   Price Input
+   ========================= */
+
+.input-with-prefix {
+  position: relative;
+
+  display: flex;
+  align-items: center;
+}
+
+.input-with-prefix > span {
+  position: absolute;
+  left: 12px;
+
+  z-index: 1;
+
+  color: #64748b;
+  font-size: 14px;
+  font-weight: 500;
+
+  pointer-events: none;
+}
+
+.input-with-prefix input {
+  padding-left: 32px;
+}
+
+
+/* =========================
+   Description
+   ========================= */
+
+.character-count {
+  align-self: flex-end;
+
+  margin-top: -2px;
+
+  color: #94a3b8;
+  font-size: 11px;
+}
+
+
+/* =========================
+   Product Status
+   ========================= */
+
+.toggle-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+
+  grid-column: 1 / -1;
+
+  cursor: pointer;
+}
+
+.toggle-row > input {
+  position: absolute;
+
+  width: 1px;
+  height: 1px;
+
+  opacity: 0;
+  pointer-events: none;
+}
+
+.toggle-switch {
+  position: relative;
+
+  width: 44px;
+  height: 24px;
+
+  flex-shrink: 0;
+
+  border-radius: 999px;
+
+  background: #cbd5e1;
+
+  transition: background-color 0.2s ease;
+}
+
+.toggle-switch::after {
+  content: '';
+
+  position: absolute;
+  top: 3px;
+  left: 3px;
+
+  width: 18px;
+  height: 18px;
+
+  border-radius: 50%;
+
+  background: #ffffff;
+
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.25);
+
+  transition: transform 0.2s ease;
+}
+
+.toggle-row input:checked + .toggle-switch {
+  background: #2563eb;
+}
+
+.toggle-row input:checked + .toggle-switch::after {
+  transform: translateX(20px);
+}
+
+.toggle-row input:focus-visible + .toggle-switch {
+  outline: 3px solid rgba(37, 99, 235, 0.2);
+  outline-offset: 2px;
+}
+
+.toggle-content {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.toggle-content strong {
+  color: #334155;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.toggle-content small {
+  color: #64748b;
+  font-size: 12px;
+}
+
+
+/* =========================
+   Form Actions
+   ========================= */
+
+.form-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+
+  padding: 4px 0 20px;
+}
+
+.cancel-button,
+.save-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  min-width: 120px;
+  height: 42px;
+
+  padding: 0 18px;
+
+  border-radius: 8px;
+
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.1s ease;
+}
+
+.cancel-button {
+  border: 1px solid #cbd5e1;
+
+  background: #ffffff;
+
+  color: #475569;
+}
+
+.cancel-button:hover:not(:disabled) {
+  border-color: #94a3b8;
+  background: #f8fafc;
+
+  color: #0f172a;
+}
+
+.save-button {
+  border: 1px solid #2563eb;
+
+  background: #2563eb;
+
+  color: #ffffff;
+}
+
+.save-button:hover:not(:disabled) {
+  border-color: #1d4ed8;
+  background: #1d4ed8;
+}
+
+.save-button:active:not(:disabled),
+.cancel-button:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.save-button:disabled,
+.cancel-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+
+/* =========================
+   Disabled Inputs
+   ========================= */
+
+.form-field input:disabled,
+.form-field select:disabled,
+.form-field textarea:disabled {
+  cursor: not-allowed;
+
+  background: #f8fafc;
+  color: #94a3b8;
+}
+
+
+/* =========================
+   Responsive - Tablet
+   ========================= */
+
+@media (max-width: 900px) {
+
+  .product-form-page {
+    padding: 24px;
+  }
+
+  .card-body {
+    grid-template-columns: 1fr;
+  }
+
+  .form-field.full-width {
+    grid-column: auto;
+  }
+
+}
+
+
+/* =========================
+   Responsive - Mobile
+   ========================= */
+
+@media (max-width: 600px) {
+
+  .product-form-page {
+    padding: 18px;
+  }
+
+  .page-heading h1 {
+    font-size: 26px;
+  }
+
+  .card-header {
+    padding: 18px;
+  }
+
+  .card-body {
+    padding: 18px;
+    gap: 18px;
+  }
+
+  .form-actions {
+    flex-direction: column-reverse;
+  }
+
+  .cancel-button,
+  .save-button {
+    width: 100%;
+  }
+
+}

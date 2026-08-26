@@ -1,0 +1,136 @@
+<div class="user-dashboard">
+
+  <!-- Welcome Banner -->
+  <div class="welcome-banner">
+    <div class="banner-content">
+      <span class="user-badge">{{ authStore.userRole() || 'User' }} Portal</span>
+      <h1>Welcome back to Store Portal</h1>
+      <p>Discover products, explore active categories, and manage your orders seamlessly.</p>
+    </div>
+    <div class="banner-decoration">
+      <span class="banner-icon">🛍️</span>
+    </div>
+  </div>
+
+  <!-- Summary Cards -->
+  <section class="summary-grid">
+    @for (card of summaryCards(); track card.title) {
+      <div class="summary-card">
+        <div class="card-top">
+          <div class="card-icon">{{ card.icon }}</div>
+        </div>
+        <div class="card-title">{{ card.title }}</div>
+        <div class="card-value">{{ card.value }}</div>
+        <div class="card-description">{{ card.description }}</div>
+      </div>
+    }
+  </section>
+
+  <!-- User Main Content Grid -->
+  <section class="user-grid">
+
+    <!-- Categories Section -->
+    <div class="dashboard-card categories-card">
+      <div class="card-header">
+        <div>
+          <h2>Store Categories</h2>
+          <p>{{ categoryStore.categoryCount() }} active product categories</p>
+        </div>
+        <a routerLink="/user/categories">View all</a>
+      </div>
+
+      <div class="category-list">
+        @for (category of categoryStore.categories(); track category.categoryID) {
+          <div class="category-item">
+            <div class="category-info">
+              <div class="category-icon">▦</div>
+              <div>
+                <strong>{{ category.categoryName }}</strong>
+                <span>{{ category.productCount || 0 }} products available</span>
+              </div>
+            </div>
+            <a [routerLink]="['/user/products']" [queryParams]="{ categoryId: category.categoryID }" class="btn-browse">Browse</a>
+          </div>
+        } @empty {
+          <div class="empty-state">No categories available right now.</div>
+        }
+      </div>
+    </div>
+
+    <!-- Recent Orders Section -->
+    <div class="dashboard-card orders-card">
+      <div class="card-header">
+        <div>
+          <h2>My Orders</h2>
+          <p>Recent order status</p>
+        </div>
+        <a routerLink="/user/orders">View all</a>
+      </div>
+
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Order ID</th>
+              <th>Amount</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (order of orderStore.ordersSummary(); track order.orderID) {
+              <tr>
+                <td><strong>#{{ order.orderID }}</strong></td>
+                <td>₹{{ order.totalAmount }}</td>
+                <td><span class="status completed">Completed</span></td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="3" class="empty-cell">No recent orders found.</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- Quick Actions -->
+  <section class="quick-actions">
+    <h2>Quick Links</h2>
+    <div class="action-grid">
+      <a routerLink="/user/products" class="action-card">
+        <span class="action-icon">▣</span>
+        <div>
+          <strong>Browse Products</strong>
+          <span>View all items in store</span>
+        </div>
+      </a>
+
+      <a routerLink="/user/cart" class="action-card">
+        <span class="action-icon">🛒</span>
+        <div>
+          <strong>My Cart</strong>
+          <span>Review cart items</span>
+        </div>
+      </a>
+
+      <a routerLink="/user/categories" class="action-card">
+        <span class="action-icon">▦</span>
+        <div>
+          <strong>Explore Categories</strong>
+          <span>Filter by product type</span>
+        </div>
+      </a>
+
+      <a routerLink="/user/orders" class="action-card">
+        <span class="action-icon">☷</span>
+        <div>
+          <strong>My Orders</strong>
+          <span>Check your order history</span>
+        </div>
+      </a>
+    </div>
+  </section>
+
+</div>

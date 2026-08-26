@@ -1,0 +1,227 @@
+<div class="login-page">
+
+  <div class="login-container">
+
+    <!-- Left Branding Section -->
+
+    <section class="branding-section">
+
+      <div class="brand">
+
+        <div class="brand-icon">
+          <span>SM</span>
+        </div>
+
+        <h1>
+          Store<span>Manager</span>
+        </h1>
+
+      </div>
+
+
+      <div class="branding-content">
+
+        <h2>
+          Welcome back.
+        </h2>
+
+        <p>
+          Sign in to manage your store,
+          track inventory and stay on top
+          of your business.
+        </p>
+
+
+        <div class="feature-list">
+
+          <div class="feature-item">
+
+            <div class="feature-icon">
+              ✓
+            </div>
+
+            <div>
+              <strong>
+                Everything in one place
+              </strong>
+
+              <span>
+                Products, customers and orders.
+              </span>
+            </div>
+
+          </div>
+
+
+          <div class="feature-item">
+
+            <div class="feature-icon">
+              ✓
+            </div>
+
+            <div>
+              <strong>
+                Real-time inventory
+              </strong>
+
+              <span>
+                Keep track of your stock.
+              </span>
+            </div>
+
+          </div>
+
+
+          <div class="feature-item">
+
+            <div class="feature-icon">
+              ✓
+            </div>
+
+            <div>
+              <strong>
+                Simple management
+              </strong>
+
+              <span>
+                Focus on growing your store.
+              </span>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <div class="branding-footer">
+        © 2026 StoreManager
+      </div>
+
+    </section>
+
+
+    <!-- Login Section -->
+
+    <section class="form-section">
+
+      <div class="form-wrapper">
+
+
+        <!-- Header -->
+
+        <div class="form-header">
+
+          <span class="welcome-text">
+            WELCOME BACK
+          </span>
+
+          <h2>
+            Sign in to your account
+          </h2>
+
+          <p>
+            Enter your credentials to continue.
+          </p>
+
+        </div>
+
+
+        <!-- Form -->
+
+        <form
+          [formGroup]="loginForm"
+          (ngSubmit)="login()"
+          class="signin-form"
+        >
+
+          <div class="form-group">
+            <label for="email">
+              Email
+            </label>
+
+            <input
+              id="email"
+              type="email"
+              formControlName="email"
+              placeholder="Enter your email"
+              autocomplete="email"
+            />
+
+            @if (
+              loginForm.controls.email.touched &&
+              loginForm.controls.email.invalid
+            ) {
+              <span class="field-error">
+                @if (loginForm.controls.email.errors?.['required']) {
+                  Email is required.
+                }
+                @if (loginForm.controls.email.errors?.['email']) {
+                  Please enter a valid email address.
+                }
+              </span>
+            }
+          </div>
+
+
+          <div class="form-group">
+            <label for="password">
+              Password
+            </label>
+
+            <input
+              id="password"
+              type="password"
+              formControlName="password"
+              placeholder="Enter password"
+              autocomplete="current-password"
+            />
+
+            @if (
+              loginForm.controls.password.touched &&
+              loginForm.controls.password.invalid
+            ) {
+              <span class="field-error">
+                Password is required.
+              </span>
+            }
+          </div>
+
+
+          @if (authStore.error()) {
+            <div class="login-error">
+              {{ authStore.error() }}
+            </div>
+          }
+
+
+          <button
+            type="submit"
+            class="signin-button"
+            [disabled]="authStore.loading()"
+          >
+            @if (authStore.loading()) {
+              Signing in...
+            } @else {
+              Sign In
+            }
+          </button>
+
+
+          <div class="login-link" style="margin-top: 20px; text-align: center; font-size: 13px; color: #6b7280;">
+            Don't have an account?
+            <a routerLink="/signup" style="color: #2563eb; font-weight: 600; text-decoration: none; margin-left: 4px;">
+              Sign up
+            </a>
+          </div>
+
+        </form>
+
+      </div>
+
+    </section>
+
+  </div>
+
+</div>

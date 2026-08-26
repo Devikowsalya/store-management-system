@@ -1,0 +1,183 @@
+<div class="user-page">
+
+  <!-- =========================
+       Page Header
+       ========================= -->
+  <div class="page-header">
+    <div class="page-heading">
+      <span class="page-label">
+        STORE MANAGEMENT
+      </span>
+      <h1>
+        Users
+      </h1>
+      <p>
+        Manage team members, user roles, departments and account access.
+      </p>
+    </div>
+
+    <!-- <button type="button" class="primary-button" (click)="addUser()">
+      <span class="button-icon">+</span>
+      <span>Add User</span>
+    </button> -->
+  </div>
+
+
+  <!-- =========================
+       User Card Section
+       ========================= -->
+  <section class="user-card">
+
+    <!-- Toolbar -->
+    <div class="user-toolbar">
+      <div class="toolbar-left">
+        <h2>User Directory</h2>
+        <span class="user-count">{{ userCount() }}</span>
+      </div>
+
+      <div class="toolbar-right">
+        <!-- Search Input -->
+        <div class="search-box">
+          <span class="search-icon">⌕</span>
+          <input
+            type="search"
+            placeholder="Search users..."
+            [value]="searchTerm()"
+            (input)="onSearch($event)"
+          />
+          @if (searchTerm()) {
+            <button
+              type="button"
+              class="clear-search"
+              (click)="clearSearch()"
+              aria-label="Clear search"
+            >
+              ×
+            </button>
+          }
+        </div>
+
+        <!-- Filter Button -->
+        <button type="button" class="secondary-button">
+          <span>⚙</span>
+          Filters
+        </button>
+      </div>
+    </div>
+
+
+    <!-- Loading State -->
+    @if (isLoading()) {
+      <div class="loading-state">
+        <div class="spinner"></div>
+        <span>Loading users...</span>
+      </div>
+    }
+
+    <!-- Empty State -->
+    @else if (filteredUsers().length === 0) {
+      <div class="empty-state">
+        <div class="empty-icon">👤</div>
+        <h3>No users found</h3>
+        <p>Try refining your search terms or register a new user.</p>
+        <button type="button" class="primary-button" (click)="addUser()">
+          Add User
+        </button>
+      </div>
+    }
+
+    <!-- User Table -->
+    @else {
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>User</th>
+              <th>Email & Contact</th>
+              <th>Role</th>
+              <th>Department</th>
+              <th>Status</th>
+              <th class="actions-column">Actions</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            @for (user of filteredUsers(); track user.userID) {
+              <tr>
+                <!-- User Info (Avatar + Name + ID) -->
+                <td>
+                  <div class="user-info">
+                    <div class="user-avatar">
+                      {{ getInitials(user.fullName) }}
+                    </div>
+                    <div class="user-details">
+                      <strong>{{ user.fullName }}</strong>
+                      <span>#{{ user.userID }}</span>
+                    </div>
+                  </div>
+                </td>
+
+                <!-- Email & Phone -->
+                <td>
+                  <div class="contact-details">
+                    <span class="contact-email">{{ user.email }}</span>
+                    @if (user.phone) {
+                      <span class="contact-phone">{{ user.phone }}</span>
+                    }
+                  </div>
+                </td>
+
+                <!-- Role Badge -->
+                <td>
+                  <span class="role-badge" [ngClass]="getRoleBadgeClass(user.role)">
+                    {{ user.role }}
+                  </span>
+                </td>
+
+                <!-- Department -->
+                <td>
+                  <span class="department-badge">
+                    {{ user.department || '—' }}
+                  </span>
+                </td>
+
+                <!-- Status -->
+                <td>
+                  @if (user.isActive) {
+                    <span class="status active">Active</span>
+                  } @else {
+                    <span class="status inactive">Inactive</span>
+                  }
+                </td>
+
+                <!-- Actions -->
+                <td>
+                  <div class="actions">
+                    <button
+                      type="button"
+                      class="icon-button"
+                      title="Edit user"
+                      (click)="editUser(user)"
+                    >
+                      ✎
+                    </button>
+                    <button
+                      type="button"
+                      class="icon-button delete"
+                      title="Delete user"
+                      (click)="deleteUser(user)"
+                    >
+                      ×
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+
+  </section>
+
+</div>

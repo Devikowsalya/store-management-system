@@ -1,0 +1,215 @@
+<div class="supplier-form-page">
+
+  <!-- =========================
+       Page Header
+       ========================= -->
+  <div class="page-header">
+    <div class="page-heading">
+      <button type="button" class="back-button" (click)="cancel()">
+        <span>←</span>
+        Back to Suppliers
+      </button>
+
+      <span class="page-label">
+        SUPPLIER MANAGEMENT
+      </span>
+
+      <h1>
+        @if (isEditMode()) {
+          Edit Supplier
+        } @else {
+          Add Supplier
+        }
+      </h1>
+
+      <p>
+        @if (isEditMode()) {
+          Update supplier details, primary contact person, and address.
+        } @else {
+          Add a new vendor or product supplier to your store network.
+        }
+      </p>
+    </div>
+  </div>
+
+  <!-- =========================
+       Error Message
+       ========================= -->
+  @if (errorMessage()) {
+    <div class="error-banner">
+      <span class="error-icon">!</span>
+      <span>{{ errorMessage() }}</span>
+    </div>
+  }
+
+  <!-- =========================
+       Loading State
+       ========================= -->
+  @if (isLoading()) {
+    <div class="loading-state">
+      <div class="spinner"></div>
+      <span>Loading supplier details...</span>
+    </div>
+  } @else {
+    <!-- =========================
+         Supplier Form
+         ========================= -->
+    <form class="supplier-form" [formGroup]="supplierForm" (ngSubmit)="saveSupplier()">
+
+      <!-- Basic Supplier Information Card -->
+      <section class="form-card">
+        <div class="card-header">
+          <div>
+            <h2>Supplier Details</h2>
+            <p>Enter the vendor name, primary contact, and communication details.</p>
+          </div>
+        </div>
+
+        <div class="card-body">
+          <!-- Supplier Name -->
+          <div class="form-field full-width">
+            <label for="supplierName">
+              Supplier / Company Name <span>*</span>
+            </label>
+            <input
+              id="supplierName"
+              type="text"
+              formControlName="supplierName"
+              placeholder="e.g. Acme Logistics Ltd."
+              [class.invalid]="isFieldInvalid('supplierName')"
+            />
+            @if (isFieldInvalid('supplierName')) {
+              <small class="field-error">
+                @if (supplierForm.controls.supplierName.errors?.['required']) {
+                  Supplier name is required.
+                } @else if (supplierForm.controls.supplierName.errors?.['minlength']) {
+                  Supplier name must contain at least 2 characters.
+                }
+              </small>
+            }
+          </div>
+
+          <!-- Contact Person -->
+          <div class="form-field">
+            <label for="contactPerson">
+              Contact Person <span>*</span>
+            </label>
+            <input
+              id="contactPerson"
+              type="text"
+              formControlName="contactPerson"
+              placeholder="e.g. Jane Smith"
+              [class.invalid]="isFieldInvalid('contactPerson')"
+            />
+            @if (isFieldInvalid('contactPerson')) {
+              <small class="field-error">
+                @if (supplierForm.controls.contactPerson.errors?.['required']) {
+                  Contact person is required.
+                } @else if (supplierForm.controls.contactPerson.errors?.['minlength']) {
+                  Contact person must contain at least 2 characters.
+                }
+              </small>
+            }
+          </div>
+
+          <!-- Email -->
+          <div class="form-field">
+            <label for="email">
+              Email Address <span>*</span>
+            </label>
+            <input
+              id="email"
+              type="email"
+              formControlName="email"
+              placeholder="contact@supplier.com"
+              [class.invalid]="isFieldInvalid('email')"
+            />
+            @if (isFieldInvalid('email')) {
+              <small class="field-error">
+                @if (supplierForm.controls.email.errors?.['required']) {
+                  Email address is required.
+                } @else if (supplierForm.controls.email.errors?.['email']) {
+                  Please enter a valid email address.
+                }
+              </small>
+            }
+          </div>
+
+          <!-- Phone -->
+          <div class="form-field">
+            <label for="phone">
+              Phone Number
+            </label>
+            <input
+              id="phone"
+              type="tel"
+              formControlName="phone"
+              placeholder="+1 (555) 000-1122"
+            />
+          </div>
+
+          <!-- Address -->
+          <div class="form-field full-width">
+            <label for="address">
+              Office / Warehouse Address
+            </label>
+            <textarea
+              id="address"
+              formControlName="address"
+              rows="3"
+              placeholder="Enter full postal address"
+            ></textarea>
+          </div>
+        </div>
+      </section>
+
+      <!-- Status Card -->
+      <section class="form-card">
+        <div class="card-header">
+          <div>
+            <h2>Supplier Status</h2>
+            <p>Control whether this supplier is active for purchase orders.</p>
+          </div>
+        </div>
+
+        <div class="card-body">
+          <label class="toggle-row">
+            <input type="checkbox" formControlName="isActive" />
+            <span class="toggle-switch"></span>
+            <span class="toggle-content">
+              <strong>Active Supplier</strong>
+              <small>Supplier is eligible for new product sourcing and restocking.</small>
+            </span>
+          </label>
+        </div>
+      </section>
+
+      <!-- Form Actions -->
+      <div class="form-actions">
+        <button
+          type="button"
+          class="cancel-button"
+          (click)="cancel()"
+          [disabled]="isSaving()"
+        >
+          Cancel
+        </button>
+
+        <button
+          type="submit"
+          class="save-button"
+          [disabled]="isSaving()"
+        >
+          @if (isSaving()) {
+            <span class="button-spinner"></span>
+            {{ isEditMode() ? 'Saving Changes...' : 'Adding Supplier...' }}
+          } @else {
+            <span>{{ isEditMode() ? '✓' : '+' }}</span>
+            {{ isEditMode() ? 'Save Changes' : 'Add Supplier' }}
+          }
+        </button>
+      </div>
+
+    </form>
+  }
+</div>
