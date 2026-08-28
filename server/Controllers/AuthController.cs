@@ -50,7 +50,8 @@ namespace StoreApi.Controllers
                 3 => "Supervisor",
                 4 => "Employee",
                 5 => "User",
-                _ => "User"
+                7 => "Inventory Manager",
+                8 => "Delivery Partner"
             };
 
             // JWT Claims

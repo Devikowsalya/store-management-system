@@ -282,7 +282,7 @@
   display: inline-flex;
   align-items: center;
 
-  padding: 5px 10px;
+  padding: 5px 12px;
   border-radius: 999px;
 
   background: #fff4d8;
@@ -318,31 +318,21 @@
   }
 }
 
+.process-btn {
+  background: #5558e3;
+  color: #ffffff;
+
+  &:hover {
+    background: #4447ce;
+  }
+}
+
 .view-btn {
   background: #f1f1ff;
   color: #5154c9;
 
   &:hover {
     background: #e6e7ff;
-  }
-}
-
-.edit-btn {
-  background: #ffffff;
-  border-color: #dfe1e7 !important;
-  color: #4d515a;
-
-  &:hover {
-    background: #f3f4f6;
-  }
-}
-
-.delete-btn {
-  background: #fff2f2;
-  color: #c33d3d;
-
-  &:hover {
-    background: #ffe4e4;
   }
 }
 

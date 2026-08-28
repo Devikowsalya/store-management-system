@@ -20,4 +20,9 @@ export interface UserRequest {
   isActive?: boolean;
 }
 
+export interface User_Role {
+  roleID: number;
+  roleName: UserRole;
+}
+
 

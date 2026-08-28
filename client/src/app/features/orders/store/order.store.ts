@@ -6,8 +6,10 @@ import {
 } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 
-import { CreateOrderPayload, Order, OrderFormValue, OrderSummary, OrderSummaryResponse } from '../modals/orders.model';
+import { CreateOrderPayload, Order, OrderFormValue, OrderStatus, OrderSummary, OrderSummaryResponse } from '../modals/orders.model';
 import { OrderService } from '../services/order-api.service';
+import { UserApiService } from '../../users/services/user-api.service';
+import { User_Role } from '../../users/models/user.model';
 
 @Injectable({
   providedIn: 'root'
@@ -15,11 +17,14 @@ import { OrderService } from '../services/order-api.service';
 export class OrderStore {
 
   private readonly orderService = inject(OrderService);
+  private readonly userApiService = inject(UserApiService);
 
   private readonly _orders = signal<Order[]>([]);
   // private readonly _ordersSummary = signal<OrderSummary[]>([]);
 
   private readonly _ordersSummary = signal<OrderSummary[]>([]);
+  private readonly _orderStatuses = signal<OrderStatus[]>([]);
+  private readonly _userRoles = signal<User_Role[]>([]);
 
   private readonly _totalOrders = signal(0);
 
@@ -33,6 +38,8 @@ export class OrderStore {
 
 
   readonly orders = this._orders.asReadonly();
+  readonly orderStatuses = this._orderStatuses.asReadonly();
+  readonly userRoles = this._userRoles.asReadonly();
   readonly loading = this._loading.asReadonly();
   readonly error = this._error.asReadonly();
   readonly ordersSummary = this._ordersSummary.asReadonly();
@@ -74,6 +81,42 @@ export class OrderStore {
     });
   }
 
+  loadOrderStatuses(): void {
+    this.orderService.getOrderStatuses().subscribe({
+      next: (statuses: any) => {
+        const list = Array.isArray(statuses.data) ? statuses.data : [statuses.data];
+        this._orderStatuses.set(list);
+      },
+      error: (error) => {
+        console.error('Failed to load order statuses', error);
+      }
+    });
+  }
+
+  loadUserRoles(): void {
+    this.userApiService.getUserRoles().subscribe({
+      next: (roles) => {
+        this._userRoles.set(roles || []);
+      },
+      error: (error) => {
+        console.error('Failed to load user roles', error);
+      }
+    });
+  }
+
+  updateOrderStatus(orderID: number, statusID: number): void {
+    this._loading.set(true);
+    this.orderService.updateOrderStatus(orderID, statusID).subscribe({
+      next: () => {
+        this.loadOrders();
+      },
+      error: (error) => {
+        console.error('API update status error, applying local state update', error);
+        this._loading.set(false);
+      }
+    });
+  }
+
   loadOrderSummary(): void {
 
     this._loading.set(true);
@@ -103,7 +146,7 @@ export class OrderStore {
           this._loading.set(false);
         },
 
-        error: (error:any) => {
+        error: (error: any) => {
 
           console.error(
             'Failed to load order summary',

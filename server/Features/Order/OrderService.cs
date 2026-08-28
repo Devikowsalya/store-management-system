@@ -54,6 +54,8 @@ namespace StoreApi.Features.Order
         {
             var order = await _orderRepository.GetByIdAsync(id);
 
+            var statusName =
+      await _orderRepository.GetStatusNameAsync(order.StatusID);
             if (order == null)
             {
                 return null;
@@ -65,6 +67,8 @@ namespace StoreApi.Features.Order
                 CustomerId = order.CustomerId,
                 OrderDate = order.OrderDate,
                 TotalAmount = order.TotalAmount,
+                StatusID = order.StatusID,
+                StatusName = statusName,
                 Items = parsedItems
             };
 
@@ -95,11 +99,13 @@ namespace StoreApi.Features.Order
             {
                 return null;
             }
-
+ 
             order.CustomerId = dto.CustomerId;
             order.OrderDate = dto.OrderDate ?? DateTime.Now;
             order.TotalAmount = dto.TotalAmount;
             order.Items = dto.Items;
+            order.StatusID = order.StatusID;
+             
 
 
             return await _orderRepository.UpdateOrderAsync(order);
@@ -245,7 +251,21 @@ namespace StoreApi.Features.Order
 
 
 
+        public async Task<OrderModal?> UpdateOrderStatusAsync(
+            int orderID,
+            int statusID)
+        {
+            var order = await _orderRepository.GetByIdAsync(orderID);
 
+            if (order == null)
+            {
+                return null;
+            }
+
+            order.StatusID = statusID;
+
+            return await _orderRepository.UpdateOrderAsync(order);
+        }
 
 
 

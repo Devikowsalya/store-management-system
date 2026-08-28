@@ -1,7 +1,6 @@
 <div class="orders-page">
 
   <div class="page-header">
-
     <div>
       <h1>Orders</h1>
       <p>Manage and track customer orders</p>
@@ -10,140 +9,70 @@
     <button class="add-order-btn">
       + Add Order
     </button>
-
   </div>
 
-
   <div class="summary">
-
     <div class="summary-card">
       <span>Total Orders</span>
-
-      <strong>
-        {{ orderStore.totalOrders() }}
-      </strong>
+      <strong>{{ orderStore.totalOrders() }}</strong>
     </div>
-
 
     <div class="summary-card">
       <span>Total Order Value</span>
-
-      <strong>
-        {{ orderStore.totalOrderAmount() | currency:'INR' }}
-      </strong>
+      <strong>{{ orderStore.totalOrderAmount() | currency:'INR' }}</strong>
     </div>
-
   </div>
 
-
   @if (orderStore.loading()) {
-
-    <div class="loading">
-      Loading orders...
-    </div>
-
+    <div class="loading">Loading orders...</div>
   }
-
 
   @if (orderStore.error()) {
-
-    <div class="error">
-      {{ orderStore.error() }}
-    </div>
-
+    <div class="error">{{ orderStore.error() }}</div>
   }
 
-
   <div class="orders-list">
-
     @for (order of orderStore.orders(); track order.orderID) {
-
       <div class="order-card">
-
         <div class="order-main">
-
           <div class="order-info">
-
-            <div class="order-number">
-              Order #{{ order.orderID }}
-            </div>
-
+            <div class="order-number">Order #{{ order.orderID }}</div>
             <div class="order-meta">
-
-              <span>
-                {{ order.customerName || 'Walk-in Customer' }}
-              </span>
-
-              <span>
-                {{ order.orderDate | date:'dd MMM yyyy' }}
-              </span>
-
+              <span>{{ order.customerName || 'Walk-in Customer' }}</span>
+              <span>{{ order.orderDate | date:'dd MMM yyyy' }}</span>
             </div>
-
           </div>
-
 
           <div class="order-total">
-
             <span>Total</span>
-
-            <strong>
-              {{ order.totalAmount | currency:'INR' }}
-            </strong>
-
+            <strong>{{ order.totalAmount | currency:'INR' }}</strong>
           </div>
-
         </div>
-
 
         <div class="order-footer">
-
           <div class="status">
-            Pending
+            {{ order.statusName}}
           </div>
-
 
           <div class="actions">
-
-            <button
-              class="view-btn"
-              (click)="toggleOrder(order.orderID)"
-            >
-
-              @if (isExpanded(order.orderID)) {
-                Hide Items
-              } @else {
-                View Items
+            @if (getNextStatus(order); as nextSt) {
+              @if (canProcess(order)) {
+                <button class="process-btn" (click)="advanceStatus(order)">
+                  Advance to {{ nextSt.statusName }}
+                </button>
               }
+            }
 
+            <button class="view-btn" (click)="toggleOrder(order.orderID)">
+              @if (isExpanded(order.orderID)) { Hide Items } @else { View Items }
             </button>
-
-
-            <!-- <button class="edit-btn">
-              Edit
-            </button>
-
-
-            <button
-              class="delete-btn"
-              (click)="deleteOrder(order.orderID)"
-            >
-              Delete
-            </button> -->
-
           </div>
-
         </div>
 
-
         @if (isExpanded(order.orderID)) {
-
           <div class="order-items">
-
             <h3>Order Items</h3>
-
             <table>
-
               <thead>
                 <tr>
                   <th>Product</th>
@@ -152,51 +81,21 @@
                   <th>Total</th>
                 </tr>
               </thead>
-
               <tbody>
-
-                @for (
-                  item of order.items;
-                  track item.orderItemID ?? item.productID
-                ) {
-
+                @for (item of order.items; track item.orderItemID ?? item.productID) {
                   <tr>
-
-                    <td>
-                      {{ item.productName }}
-                    </td>
-
-                    <td>
-                      {{ item.quantity }}
-                    </td>
-
-                    <td>
-                      {{ item.unitPrice | currency:'INR' }}
-                    </td>
-
-                    <td>
-                      {{
-                        item.quantity * item.unitPrice
-                          | currency:'INR'
-                      }}
-                    </td>
-
+                    <td>{{ item.productName || ('Product #' + item.productID) }}</td>
+                    <td>{{ item.quantity }}</td>
+                    <td>{{ item.unitPrice | currency:'INR' }}</td>
+                    <td>{{ item.quantity * item.unitPrice | currency:'INR' }}</td>
                   </tr>
-
                 }
-
               </tbody>
-
             </table>
-
           </div>
-
         }
-
       </div>
-
     }
-
   </div>
 
 </div>

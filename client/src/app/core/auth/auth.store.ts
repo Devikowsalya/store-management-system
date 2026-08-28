@@ -77,11 +77,19 @@ export class AuthStore {
     localStorage.getItem('role')
   );
 
+  readonly storedRoleId = signal<number | null>(
+    localStorage.getItem('roleID') ? Number(localStorage.getItem('roleID')) : null
+  );
+
   readonly loading = signal(false);
   readonly error = signal<string | null>(null);
 
   readonly userRole = computed(() => {
     return this.roleOverride() || parseRoleFromToken(this.token());
+  });
+
+  readonly userRoleId = computed(() => {
+    return this.storedRoleId();
   });
 
   readonly customerId = computed(() => {
@@ -92,7 +100,7 @@ export class AuthStore {
     }
     return parseUserIdFromToken(this.token());
   });
- 
+
   readonly userId = this.customerId;
 
   readonly isLoggedIn = computed(() => !!this.token());
@@ -117,20 +125,21 @@ export class AuthStore {
           localStorage.setItem('token', response.token);
           this.token.set(response.token);
 
-          const role = response.data.role   || parseRoleFromToken(response.token);
+          const role = response.data.role || parseRoleFromToken(response.token);
           if (role) {
             localStorage.setItem('role', role);
             this.roleOverride.set(role);
           }
- 
-          const uid =  response.data.userID ?? 0
-            // response.userId ??
-            // response.customerID ??
-            // response.customerId ??
-            // parseUserIdFromToken(response.token);
+
+          if (response.data.roleID) {
+            localStorage.setItem('roleID', response.data.roleID.toString());
+            this.storedRoleId.set(response.data.roleID);
+          }
+
+          const uid = response.data.userID ?? 0
 
           if (uid) {
-            localStorage.setItem('userID', uid.toString()); 
+            localStorage.setItem('userID', uid.toString());
           }
 
           this.loading.set(false);
@@ -148,6 +157,7 @@ export class AuthStore {
     localStorage.clear();
     this.token.set(null);
     this.roleOverride.set(null);
+    this.storedRoleId.set(null);
     this.router.navigate(['/signin']);
   }
 }

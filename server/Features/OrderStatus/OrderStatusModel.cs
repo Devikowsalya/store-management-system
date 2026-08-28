@@ -1,16 +1,25 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace StoreApi.Features.Order
+namespace StoreApi.Features.OrderStatus
 {
     [Table("OrderStatus")]
-    public class OrderStatusModal
+    public class OrderStatusModel
     {
         [Key]
         public int StatusID { get; set; }
 
-        public string StatusName { get; set; } = string.Empty;
+        [Required]
+        public string StatusName { get; set; }
 
+        [Required]
         public int AssignedRoleID { get; set; }
+
+
+        [Required]
+        public int NextStatusId { get; set; }
     }
 }
+
+
+ 

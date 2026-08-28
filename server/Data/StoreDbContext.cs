@@ -4,6 +4,8 @@ using StoreApi.Features.Order;
 using StoreApi.Features.Product;
 using StoreApi.Features.Supplier;
 using StoreApi.Features.User;
+using StoreApi.Features.OrderStatus;
+using StoreApi.Features.Role;
 using StoreApi.Models;
 
 namespace StoreApi.Data
@@ -29,6 +31,8 @@ namespace StoreApi.Data
 
         public DbSet<UserModal> Users { get; set; }
 
-        public DbSet<OrderStatusModal> OrderStatuses { get; set; }
+        public DbSet<OrderStatusModel> OrderStatuses { get; set; }
+
+        public DbSet<RoleModel> Roles { get; set; }
     }
 }

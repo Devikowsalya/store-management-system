@@ -370,5 +370,29 @@ namespace StoreApi.Features.Order
                 Message = "Order deleted successfully."
             });
         }
+
+        [HttpPatch("{orderID}/status/{statusID}")]
+        public async Task<IActionResult> UpdateOrderStatus(
+            int orderID,
+            int statusID)
+        {
+            var updatedOrder = await _orderService.UpdateOrderStatusAsync(
+                orderID,
+                statusID);
+
+            if (updatedOrder == null)
+            {
+                return NotFound(new
+                {
+                    Message = "Order not found."
+                });
+            }
+
+            return Ok(new
+            {
+                updatedOrder.OrderID,
+                updatedOrder.StatusID
+            });
+        }
     }
 }

@@ -4,6 +4,11 @@ export interface Order {
   orderDate: string;
   totalAmount: number;
   items?: OrderItem[];
+  statusID?: number;
+  statusName?: string;
+  status?: string;
+  orderStatusID?: number;
+  assignedRoleID?: number;
 }
 
 export interface OrderSummary {
@@ -20,14 +25,14 @@ export interface OrderSummaryResponse {
   orders: OrderSummary[];
 }
 
- 
+
 export interface OrderItem {
   orderItemID?: number;
   orderID?: number;
   productID: number;
   productName?: string;
   quantity: number;
-  unitPrice:number;
+  unitPrice: number;
 }
 
 export interface OrderFormValue {
@@ -48,4 +53,11 @@ export interface CreateOrderPayload {
   orderDate: string;
   totalAmount: number;
   items: string;
-}
+}
+
+export interface OrderStatus {
+  statusID: number;
+  statusName: string;
+  assignedRoleID: number;
+  nextStatusId: number
+}
