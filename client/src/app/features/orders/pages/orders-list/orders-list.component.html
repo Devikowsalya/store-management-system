@@ -50,8 +50,8 @@
         </div>
 
         <div class="order-footer">
-          <div class="status">
-            {{ order.statusName}}
+          <div [class]="'status ' + getStatusClass(order.statusName)">
+            {{ order.statusName || 'Pending' }}
           </div>
 
           <div class="actions">

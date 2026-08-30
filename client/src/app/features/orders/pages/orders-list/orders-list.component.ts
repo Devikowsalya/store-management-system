@@ -76,4 +76,15 @@ export class OrderListComponent implements OnInit {
   isExpanded(orderID: number): boolean {
     return this.expandedOrderID() === orderID;
   }
+
+  getStatusClass(statusName: string | undefined): string {
+    if (!statusName) return 'status-pending';
+    const name = statusName.toLowerCase();
+    if (name.includes('pending')) return 'status-pending';
+    if (name.includes('process')) return 'status-processing';
+    if (name.includes('ship')) return 'status-shipped';
+    if (name.includes('deliver') || name.includes('complet')) return 'status-delivered';
+    if (name.includes('cancel') || name.includes('reject')) return 'status-cancelled';
+    return 'status-default';
+  }
 }
