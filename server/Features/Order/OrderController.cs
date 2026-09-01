@@ -371,27 +371,55 @@ namespace StoreApi.Features.Order
             });
         }
 
+        // PATCH: api/Order/20/status/3
         [HttpPatch("{orderID}/status/{statusID}")]
+        [Authorize(
+            Roles =
+                "Admin,Manager,Supervisor,Employee,Inventory Manager,Delivery Partner"
+        )]
         public async Task<IActionResult> UpdateOrderStatus(
             int orderID,
             int statusID)
         {
-            var updatedOrder = await _orderService.UpdateOrderStatusAsync(
-                orderID,
-                statusID);
+            if (orderID <= 0)
+            {
+                return BadRequest(new
+                {
+                    Message = "Invalid order ID."
+                });
+            }
+
+            if (statusID <= 0)
+            {
+                return BadRequest(new
+                {
+                    Message = "Invalid status ID."
+                });
+            }
+
+            var updatedOrder =
+                await _orderService.UpdateOrderStatusAsync(
+                    orderID,
+                    statusID
+                );
 
             if (updatedOrder == null)
             {
                 return NotFound(new
                 {
-                    Message = "Order not found."
+                    Message = "Order or order status not found."
                 });
             }
 
             return Ok(new
             {
-                updatedOrder.OrderID,
-                updatedOrder.StatusID
+                Message = "Order status updated successfully.",
+
+                Data = new
+                {
+                    updatedOrder.OrderID,
+                    updatedOrder.StatusID
+                }
             });
         }
     }
