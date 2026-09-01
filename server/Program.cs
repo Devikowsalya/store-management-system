@@ -4,10 +4,12 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using StoreApi.Data;
 using StoreApi.Features.Category;
+using StoreApi.Features.Notification;
 using StoreApi.Features.Order;
 using StoreApi.Features.Product;
 using StoreApi.Features.Supplier;
 using StoreApi.Features.User;
+// using StoreApi.Hubs;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -38,6 +40,9 @@ builder.Services.AddScoped<OrderService>();
 
 builder.Services.AddScoped<UserRepository>();
 builder.Services.AddScoped<UserService>();
+
+builder.Services.AddScoped<NotificationRepository>();
+builder.Services.AddScoped<NotificationService>();
 // -----------------------------
 // CORS
 // -----------------------------
@@ -49,7 +54,9 @@ builder.Services.AddCors(options =>
         policy
             .WithOrigins("http://localhost:4200")
             .AllowAnyHeader()
-            .AllowAnyMethod();
+            .AllowAnyMethod()
+            .AllowCredentials();
+
     });
 });
 
@@ -78,7 +85,34 @@ builder.Services
                 )
             )
         };
+
+        // SignalR browser clients can send the JWT token
+        // through the access_token query parameter.
+    //     options.Events = new JwtBearerEvents
+    //     {
+    //         OnMessageReceived = context =>
+    //         {
+    //             var accessToken =
+    //                 context.Request.Query["access_token"];
+
+    //             var requestPath =
+    //                 context.HttpContext.Request.Path;
+
+    //             if (!string.IsNullOrEmpty(accessToken) &&
+    //                 requestPath.StartsWithSegments(
+    //                     "/hubs/store"
+    //                 ))
+    //             {
+    //                 context.Token = accessToken;
+    //             }
+
+    //             return Task.CompletedTask;
+    //         }
+    //     };
+    
     });
+
+
 
 
 // -----------------------------
@@ -93,6 +127,8 @@ builder.Services.AddAuthorization();
 // -----------------------------
 
 builder.Services.AddControllers();
+
+// builder.Services.AddSignalR();
 
 
 // -----------------------------
@@ -159,5 +195,10 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+ 
+
+// SignalR endpoint
+// app.MapHub<StoreHub>("/hubs/store");
+
 
 app.Run();
