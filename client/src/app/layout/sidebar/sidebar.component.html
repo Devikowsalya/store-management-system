@@ -2,11 +2,9 @@
   class="sidebar"
   [class.collapsed]="collapsed()"
 >
-
   <!-- Logo -->
 
   <div class="sidebar-brand">
-
     <div class="brand-icon">
       SM
     </div>
@@ -16,9 +14,7 @@
         Store<span>Manager</span>
       </div>
     }
-
   </div>
-
 
   <!-- Toggle -->
 
@@ -32,20 +28,15 @@
         : 'Collapse sidebar'
     "
   >
-
     <span>
       {{ collapsed() ? '›' : '‹' }}
     </span>
-
   </button>
-
 
   <!-- Navigation -->
 
   <nav class="sidebar-nav">
-
     <div class="nav-section">
-
       @if (!collapsed()) {
         <span class="section-title">
           MAIN MENU
@@ -53,10 +44,9 @@
       }
 
       @for (item of menuItems(); track item.route) {
-
         <a
           class="nav-item"
-          [class]="item.class"
+          [class]="item.class ?? ''"
           [routerLink]="item.route"
           routerLinkActive="active"
           [routerLinkActiveOptions]="{
@@ -68,7 +58,6 @@
               : null
           "
         >
-
           <span class="nav-icon">
             {{ item.icon }}
           </span>
@@ -78,22 +67,183 @@
               {{ item.label }}
             </span>
 
-            @if (item.badge !== undefined && item.badge > 0) {
-              <span class="nav-badge">{{ item.badge }}</span>
+            @if (
+              item.badge !== undefined &&
+              item.badge > 0
+            ) {
+              <span class="nav-badge">
+                {{ item.badge }}
+              </span>
             }
           }
         </a>
-
       }
-
     </div>
-
   </nav>
 
+  <!-- Notification panel -->
+
+  @if (
+    isStaff() &&
+    notificationOpen()
+  ) {
+    <section
+      class="notification-panel"
+      aria-label="Notifications"
+    >
+      <div class="notification-header">
+        <div>
+          <h3>Notifications</h3>
+
+          <span>
+            {{ notificationStore.unreadCount() }}
+            unread
+          </span>
+        </div>
+
+        @if (
+          notificationStore.hasUnreadNotifications()
+        ) {
+          <button
+            type="button"
+            class="mark-read-button"
+            (click)="markAllAsRead()"
+          >
+            Mark all read
+          </button>
+        }
+      </div>
+
+      <div class="notification-list">
+        @for (
+          notification of notificationStore.notifications();
+          track notification.NotificationID
+        ) {
+          <article
+            class="notification-item"
+            [class.unread]="!notification.isRead"
+          >
+            <button
+              type="button"
+              class="notification-content"
+              (click)="openNotification(notification)"
+            >
+              <span class="notification-status-icon">
+                ✓
+              </span>
+
+              <span class="notification-details">
+                @if (notification.ReferenceID) {
+                  <strong>
+                    {{ notification.ReferenceType || 'Order' }} #{{ notification.ReferenceID }}
+                  </strong>
+                }
+
+                <span class="notification-message">
+                  {{ notification.NotificationString }}
+                </span>
+
+                <span class="notification-time">
+                  {{ notification.CreatedAt | date: 'short' }}
+                </span>
+              </span>
+
+              @if (!notification.isRead) {
+                <span
+                  class="unread-dot"
+                  aria-label="Unread"
+                ></span>
+              }
+            </button>
+
+            <button
+              type="button"
+              class="remove-notification"
+              aria-label="Remove notification"
+              title="Remove"
+              (click)="
+                removeNotification(
+                  $event,
+                  notification.NotificationID
+                )
+              "
+            >
+              ×
+            </button>
+          </article>
+        } @empty {
+          <div class="empty-notifications">
+            <span class="empty-icon">🔔</span>
+
+            <strong>No notifications</strong>
+
+            <span>
+              Order status updates will appear here.
+            </span>
+          </div>
+        }
+      </div>
+    </section>
+  }
 
   <!-- Bottom -->
 
   <div class="sidebar-bottom">
+    <!-- Staff notifications -->
+
+    @if (isStaff()) {
+      <button
+        type="button"
+        class="bottom-item notification-button"
+        [class.notification-active]="
+          notificationOpen()
+        "
+        [attr.title]="
+          collapsed()
+            ? 'Notifications'
+            : null
+        "
+        [attr.aria-expanded]="
+          notificationOpen()
+        "
+        (click)="toggleNotifications()"
+      >
+        <span class="nav-icon notification-icon">
+          🔔
+
+          @if (
+            collapsed() &&
+            notificationStore.unreadCount() > 0
+          ) {
+            <span class="collapsed-badge">
+              {{
+                notificationStore.unreadCount() > 9
+                  ? '9+'
+                  : notificationStore.unreadCount()
+              }}
+            </span>
+          }
+        </span>
+
+        @if (!collapsed()) {
+          <span class="nav-label">
+            Notifications
+          </span>
+
+          @if (
+            notificationStore.unreadCount() > 0
+          ) {
+            <span class="nav-badge">
+              {{
+                notificationStore.unreadCount() > 99
+                  ? '99+'
+                  : notificationStore.unreadCount()
+              }}
+            </span>
+          }
+        }
+      </button>
+    }
 
     <button
       type="button"
@@ -104,7 +254,6 @@
           : null
       "
     >
-
       <span class="nav-icon">
         ⚙
       </span>
@@ -114,9 +263,7 @@
           Settings
         </span>
       }
-
     </button>
-
 
     <button
       type="button"
@@ -128,7 +275,6 @@
           : null
       "
     >
-
       <span class="nav-icon">
         ⇥
       </span>
@@ -138,9 +284,6 @@
           Logout
         </span>
       }
-
     </button>
-
   </div>
-
 </aside>

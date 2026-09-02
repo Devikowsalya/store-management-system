@@ -12,7 +12,7 @@ import { AuthStore } from '../../../core/auth/auth.store';
   imports: [ReactiveFormsModule, RouterLink],
 })
 export class SigninComponent implements OnInit {
-  ngOnInit(): void {}
+  ngOnInit(): void { }
 
   private readonly fb = inject(FormBuilder);
   private readonly router = inject(Router);
@@ -34,14 +34,18 @@ export class SigninComponent implements OnInit {
       .login(this.loginForm.getRawValue())
       .subscribe({
         next: (response) => {
-          console.log('Login success:', response);
-          const role = response?.data?.role   || this.authStore.userRole();
-          const isAdmin = role ? role.toLowerCase() === 'admin' : false;
+          const role =
+            response?.data?.role ||
+            this.authStore.userRole();
 
-          if (isAdmin) {
-            this.router.navigate(['/admin/dashboard']);
-          } else {
+          const normalizedRole =
+            role?.trim().toLowerCase();
+
+          // Only the User role goes to the user portal.
+          if (normalizedRole === 'user') {
             this.router.navigate(['/user/dashboard']);
+          } else {
+            this.router.navigate(['/admin/dashboard']);
           }
         },
 
