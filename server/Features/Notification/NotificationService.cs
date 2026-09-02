@@ -77,6 +77,11 @@
                 roleID);
         }
 
+        public async Task<List<int>> GetAllRoleIDsAsync()
+        {
+            return await _notificationRepository.GetAllRoleIDsAsync();
+        }
+
         private static NotificationResponseDTO MapToResponse(
             NotificationModal notification,
             int currentUserID)

@@ -141,5 +141,13 @@ namespace StoreApi.Features.Notification
 
             return notifications.Count;
         }
+
+        public async Task<List<int>> GetAllRoleIDsAsync()
+        {
+            return await _context.Roles
+                .AsNoTracking()
+                .Select(role => role.RoleID)
+                .ToListAsync();
+        }
     }
 }

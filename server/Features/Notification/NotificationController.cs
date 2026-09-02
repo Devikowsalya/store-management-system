@@ -121,10 +121,10 @@ namespace StoreApi.Controllers
             out int roleID)
         {
             var userIDValue =
-                User.FindFirstValue(ClaimTypes.NameIdentifier);
+                User.FindFirstValue("UserID");
 
             var roleIDValue =
-                User.FindFirstValue("roleId");
+                User.FindFirstValue("RoleID");
 
             var validUserID =
                 int.TryParse(userIDValue, out userID);
