@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using StoreApi.DTOs;
 using StoreApi.Features.Notification;
 using System.Security.Claims;
+using Microsoft.AspNetCore.SignalR;
+using StoreApi.Hubs;
 
 namespace StoreApi.Features.Order
 {
@@ -13,13 +15,16 @@ namespace StoreApi.Features.Order
     {
         private readonly OrderService _orderService;
         private readonly NotificationService _notificationService;
+        private readonly IHubContext<NotificationHub> _notificationHubContext;
 
         public OrderController(
             OrderService orderService,
-            NotificationService notificationService)
+            NotificationService notificationService,
+            IHubContext<NotificationHub> notificationHubContext)
         {
             _orderService = orderService;
             _notificationService = notificationService;
+            _notificationHubContext = notificationHubContext;
         }
 
         // GET: api/Order
@@ -254,7 +259,7 @@ namespace StoreApi.Features.Order
             var targetRoleIDs =
     await _notificationService.GetAllRoleIDsAsync();
 
-            // Store the notification in SQL
+            // 1.Store the notification in SQL
             var notification =
            await _notificationService.CreateNotificationAsync(
                new NotificationRequestDTO
@@ -272,6 +277,15 @@ namespace StoreApi.Features.Order
 
                    TargetRoleIDs = targetRoleIDs
                });
+            // 2. Send live notification through SignalR
+            await _notificationHubContext
+                .Clients
+                .Group(NotificationHub.StaffGroup)
+                .SendAsync(
+                    "ReceiveNotification",
+                    notification
+                );
+
 
             return Ok(new
             {

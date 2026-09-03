@@ -1,42 +1,72 @@
-﻿namespace StoreApi.Features.Notification
+﻿using Microsoft.AspNetCore.SignalR;
+using StoreApi.Hubs;
+namespace StoreApi.Features.Notification
 {
     public class NotificationService
     {
         private readonly NotificationRepository _notificationRepository;
+        private readonly IHubContext<NotificationHub>
+     _hubContext;
 
         public NotificationService(
-            NotificationRepository notificationRepository)
+            NotificationRepository notificationRepository,
+             IHubContext<NotificationHub> hubContext)
         {
             _notificationRepository = notificationRepository;
+            _hubContext = hubContext;
         }
 
-        public async Task<NotificationResponseDTO> CreateNotificationAsync(
+        public async Task<NotificationResponseDTO>
+        CreateNotificationAsync(
             NotificationRequestDTO dto)
         {
+            var targetRoleIDs = dto.TargetRoleIDs
+                .Distinct()
+                .ToList();
+
             var notification = new NotificationModal
             {
                 SenderUserID = dto.SenderUserID,
                 SenderRoleID = dto.SenderRoleID,
-                NotificationString = dto.NotificationString,
-                NotificationType = dto.NotificationType,
+
+                NotificationString =
+                    dto.NotificationString,
+
+                NotificationType =
+                    dto.NotificationType,
+
                 ReferenceID = dto.ReferenceID,
                 ReferenceType = dto.ReferenceType,
 
-                TargetRoleIDs = dto.TargetRoleIDs
-                    .Distinct()
-                    .ToList(),
+                TargetRoleIDs = targetRoleIDs,
 
                 ReadByUserIDs = new List<int>(),
 
                 CreatedAt = DateTime.UtcNow
             };
 
+            // First save notification in the database.
             var createdNotification =
-                await _notificationRepository.CreateAsync(notification);
+                await _notificationRepository.CreateAsync(
+                    notification);
 
-            return MapToResponse(
+            var response = MapToResponse(
                 createdNotification,
                 dto.SenderUserID);
+
+            // Send the saved notification to all
+            // currently connected users in target roles.
+            var sendTasks = targetRoleIDs.Select(
+                roleID =>
+                    _hubContext.Clients
+                        .Group($"Role_{roleID}")
+                        .SendAsync(
+                            "ReceiveNotification",
+                            response));
+
+            await Task.WhenAll(sendTasks);
+
+            return response;
         }
 
         public async Task<List<NotificationResponseDTO>>
