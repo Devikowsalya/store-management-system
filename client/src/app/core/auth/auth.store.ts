@@ -77,11 +77,19 @@ export class AuthStore {
     localStorage.getItem('role')
   );
 
+  readonly storedRoleId = signal<number | null>(
+    localStorage.getItem('roleID') ? Number(localStorage.getItem('roleID')) : null
+  );
+
   readonly loading = signal(false);
   readonly error = signal<string | null>(null);
 
   readonly userRole = computed(() => {
     return this.roleOverride() || parseRoleFromToken(this.token());
+  });
+
+  readonly userRoleId = computed(() => {
+    return this.storedRoleId();
   });
 
   readonly customerId = computed(() => {
@@ -92,19 +100,51 @@ export class AuthStore {
     }
     return parseUserIdFromToken(this.token());
   });
- 
+
   readonly userId = this.customerId;
 
   readonly isLoggedIn = computed(() => !!this.token());
 
+  // readonly isAdmin = computed(() => {
+  //   const role = this.userRole();
+  //   return role ? role.toLowerCase() === 'admin' : false;
+  // });
+
+
+  // readonly isUser = computed(() => {
+  //   const role = this.userRole();
+  //   return role ? role.toLowerCase() === 'user' : !this.isAdmin();
+  // });
   readonly isAdmin = computed(() => {
-    const role = this.userRole();
-    return role ? role.toLowerCase() === 'admin' : false;
+    return (
+      this.userRole()?.trim().toLowerCase() ===
+      'admin'
+    );
   });
 
   readonly isUser = computed(() => {
-    const role = this.userRole();
-    return role ? role.toLowerCase() === 'user' : !this.isAdmin();
+    return (
+      this.userRole()?.trim().toLowerCase() ===
+      'user'
+    );
+  });
+
+  readonly isStaff = computed(() => {
+    const role =
+      this.userRole()?.trim().toLowerCase();
+
+    const staffRoles = [
+      'admin',
+      'manager',
+      'supervisor',
+      'employee',
+      'inventory manager',
+      'delivery partner'
+    ];
+
+    return role
+      ? staffRoles.includes(role)
+      : false;
   });
 
   login(request: LoginRequest): Observable<LoginResponse> {
@@ -117,20 +157,21 @@ export class AuthStore {
           localStorage.setItem('token', response.token);
           this.token.set(response.token);
 
-          const role = response.data.role   || parseRoleFromToken(response.token);
+          const role = response.data.role || parseRoleFromToken(response.token);
           if (role) {
             localStorage.setItem('role', role);
             this.roleOverride.set(role);
           }
- 
-          const uid =  response.data.userID ?? 0
-            // response.userId ??
-            // response.customerID ??
-            // response.customerId ??
-            // parseUserIdFromToken(response.token);
+
+          if (response.data.roleID) {
+            localStorage.setItem('roleID', response.data.roleID.toString());
+            this.storedRoleId.set(response.data.roleID);
+          }
+
+          const uid = response.data.userID ?? 0
 
           if (uid) {
-            localStorage.setItem('userID', uid.toString()); 
+            localStorage.setItem('userID', uid.toString());
           }
 
           this.loading.set(false);
@@ -145,9 +186,17 @@ export class AuthStore {
   }
 
   logout(): void {
-    localStorage.clear();
+    localStorage.removeItem('token');
+    localStorage.removeItem('role');
+    localStorage.removeItem('roleID');
+    localStorage.removeItem('userID');
+    localStorage.removeItem('userId');
+    localStorage.removeItem('customerId');
+
     this.token.set(null);
     this.roleOverride.set(null);
+    this.storedRoleId.set(null);
+
     this.router.navigate(['/signin']);
   }
 }

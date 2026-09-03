@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { BaseApiService } from '../../../core/services/base-api.service';
 import { ApiResponse } from '../../../core/models/api-response.model';
 
-import { User, UserRequest } from '../models/user.model';
+import { User, User_Role, UserRequest } from '../models/user.model';
 
 @Injectable({
   providedIn: 'root',
@@ -34,5 +34,9 @@ export class UserApiService extends BaseApiService {
 
   deleteUser(id: number): Observable<ApiResponse<null>> {
     return this.delete<ApiResponse<null>>(`${this.endpoint}/${id}`);
+  }
+
+  getUserRoles(): Observable<User_Role[]> {
+    return this.get<User_Role[]>('/Role');
   }
 }

@@ -4,10 +4,15 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using StoreApi.Data;
 using StoreApi.Features.Category;
+using StoreApi.Features.Notification;
 using StoreApi.Features.Order;
 using StoreApi.Features.Product;
 using StoreApi.Features.Supplier;
 using StoreApi.Features.User;
+using StoreApi.Hubs;
+using System.Text;
+
+// using StoreApi.Hubs;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -38,6 +43,9 @@ builder.Services.AddScoped<OrderService>();
 
 builder.Services.AddScoped<UserRepository>();
 builder.Services.AddScoped<UserService>();
+
+builder.Services.AddScoped<NotificationRepository>();
+builder.Services.AddScoped<NotificationService>();
 // -----------------------------
 // CORS
 // -----------------------------
@@ -49,7 +57,9 @@ builder.Services.AddCors(options =>
         policy
             .WithOrigins("http://localhost:4200")
             .AllowAnyHeader()
-            .AllowAnyMethod();
+            .AllowAnyMethod()
+            .AllowCredentials();
+
     });
 });
 
@@ -59,26 +69,127 @@ builder.Services.AddCors(options =>
 // -----------------------------
 
 builder.Services
-    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddAuthentication(options =>
+    {
+        options.DefaultAuthenticateScheme =
+            JwtBearerDefaults.AuthenticationScheme;
+
+        options.DefaultChallengeScheme =
+            JwtBearerDefaults.AuthenticationScheme;
+    })
     .AddJwtBearer(options =>
     {
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuer = true,
-            ValidateAudience = true,
-            ValidateLifetime = true,
-            ValidateIssuerSigningKey = true,
+        options.TokenValidationParameters =
+            new TokenValidationParameters
+            {
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidateLifetime = true,
+                ValidateIssuerSigningKey = true,
 
-            ValidIssuer = builder.Configuration["Jwt:Issuer"],
-            ValidAudience = builder.Configuration["Jwt:Audience"],
+                ValidIssuer =
+                    builder.Configuration[
+                        "Jwt:Issuer"
+                    ],
 
-            IssuerSigningKey = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(
-                    builder.Configuration["Jwt:Key"]!
-                )
-            )
-        };
+                ValidAudience =
+                    builder.Configuration[
+                        "Jwt:Audience"
+                    ],
+
+                IssuerSigningKey =
+                    new SymmetricSecurityKey(
+                        Encoding.UTF8.GetBytes(
+                            builder.Configuration[
+                                "Jwt:Key"
+                            ]!
+                        )
+                    ),
+
+                ClockSkew = TimeSpan.Zero
+            };
+
+        options.Events =
+            new JwtBearerEvents
+            {
+                OnMessageReceived = context =>
+                {
+                    var accessToken =
+                        context.Request.Query[
+                            "access_token"
+                        ];
+
+                    var requestPath =
+                        context.HttpContext
+                            .Request.Path;
+
+                    if (
+                        !string.IsNullOrWhiteSpace(
+                            accessToken
+                        ) &&
+                        requestPath
+                            .StartsWithSegments(
+                                "/notificationHub"
+                            )
+                    )
+                    {
+                        context.Token =
+                            accessToken;
+                    }
+
+                    return Task.CompletedTask;
+                }
+            };
     });
+
+//builder.Services
+//    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+//    .AddJwtBearer(options =>
+//    {
+//        options.TokenValidationParameters = new TokenValidationParameters
+//        {
+//            ValidateIssuer = true,
+//            ValidateAudience = true,
+//            ValidateLifetime = true,
+//            ValidateIssuerSigningKey = true,
+
+//            ValidIssuer = builder.Configuration["Jwt:Issuer"],
+//            ValidAudience = builder.Configuration["Jwt:Audience"],
+
+//            IssuerSigningKey = new SymmetricSecurityKey(
+//                Encoding.UTF8.GetBytes(
+//                    builder.Configuration["Jwt:Key"]!
+//                )
+//            )
+//        };
+
+//        // SignalR browser clients can send the JWT token
+//        // through the access_token query parameter.
+//        options.Events = new JwtBearerEvents
+//        {
+//            OnMessageReceived = context =>
+//            {
+//                var accessToken =
+//                    context.Request.Query["access_token"];
+
+//                var requestPath =
+//                    context.HttpContext.Request.Path;
+
+//                if (!string.IsNullOrEmpty(accessToken) &&
+//                    requestPath.StartsWithSegments(
+//                        "/hubs/store"
+//                    ))
+//                {
+//                    context.Token = accessToken;
+//                }
+
+//                return Task.CompletedTask;
+//            }
+//        };
+
+//    });
+
+
 
 
 // -----------------------------
@@ -93,6 +204,8 @@ builder.Services.AddAuthorization();
 // -----------------------------
 
 builder.Services.AddControllers();
+
+ builder.Services.AddSignalR();
 
 
 // -----------------------------
@@ -159,5 +272,12 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+
+//SignalR endpoint
+
+app.MapHub<NotificationHub>(
+    "/notificationHub");
+
 
 app.Run();
