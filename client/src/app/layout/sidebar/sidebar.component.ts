@@ -58,7 +58,7 @@ export class SidebarComponent implements OnInit {
   readonly isUser = this.authStore.isUser;
 
   ngOnInit(): void {
-    if (this.isStaff()) {
+    if (this.authStore.isLoggedIn()) {
       this.notificationStore.loadNotifications();
     }
   }
