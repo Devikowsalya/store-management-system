@@ -1,19 +1,17 @@
-﻿using Microsoft.AspNetCore.SignalR;
-using StoreApi.Hubs;
-namespace StoreApi.Features.Notification
+﻿namespace StoreApi.Features.Notification
 {
     public class NotificationService
     {
         private readonly NotificationRepository _notificationRepository;
-        private readonly IHubContext<NotificationHub>
-     _hubContext;
+        //private readonly IHubContext<NotificationHub> _hubContext;
 
         public NotificationService(
-            NotificationRepository notificationRepository,
-             IHubContext<NotificationHub> hubContext)
+            NotificationRepository notificationRepository
+             //IHubContext<NotificationHub> hubContext
+            )
         {
             _notificationRepository = notificationRepository;
-            _hubContext = hubContext;
+            //_hubContext = hubContext;
         }
 
         public async Task<NotificationResponseDTO>
@@ -56,15 +54,15 @@ namespace StoreApi.Features.Notification
 
             // Send the saved notification to all
             // currently connected users in target roles.
-            var sendTasks = targetRoleIDs.Select(
-                roleID =>
-                    _hubContext.Clients
-                        .Group($"Role_{roleID}")
-                        .SendAsync(
-                            "ReceiveNotification",
-                            response));
+            //var sendTasks = targetRoleIDs.Select(
+            //    roleID =>
+            //        _hubContext.Clients
+            //            .Group($"Role_{roleID}")
+            //            .SendAsync(
+            //                "ReceiveNotification",
+            //                response));
 
-            await Task.WhenAll(sendTasks);
+            //await Task.WhenAll(sendTasks);
 
             return response;
         }
