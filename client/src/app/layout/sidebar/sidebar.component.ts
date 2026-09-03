@@ -171,18 +171,18 @@ export class SidebarComponent implements OnInit {
   openNotification(
     notification: OrderStatusNotification
   ): void {
-    if (notification.NotificationID) {
-      this.notificationStore.markAsRead(notification.NotificationID);
+    if (notification.notificationID) {
+      this.notificationStore.markAsRead(notification.notificationID);
     }
 
     this.notificationOpen.set(false);
 
-    if (notification.ReferenceID) {
+    if (notification.referenceID) {
       void this.router.navigate(
         [`${this.baseRoute()}/orders`],
         {
           queryParams: {
-            orderID: notification.ReferenceID
+            orderID: notification.referenceID
           }
         }
       );

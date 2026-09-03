@@ -117,7 +117,7 @@
       <div class="notification-list">
         @for (
           notification of notificationStore.notifications();
-          track notification.NotificationID
+          track notification.notificationID
         ) {
           <article
             class="notification-item"
@@ -133,18 +133,18 @@
               </span>
 
               <span class="notification-details">
-                @if (notification.ReferenceID) {
+                @if (notification.referenceID) {
                   <strong>
-                    {{ notification.ReferenceType || 'Order' }} #{{ notification.ReferenceID }}
+                    {{ notification.referenceType || 'Order' }} #{{ notification.referenceID }}
                   </strong>
                 }
 
                 <span class="notification-message">
-                  {{ notification.NotificationString }}
+                  {{ notification.notificationString }}
                 </span>
 
                 <span class="notification-time">
-                  {{ notification.CreatedAt | date: 'short' }}
+                  {{ notification.createdAt | date: 'short' }}
                 </span>
               </span>
 
@@ -164,7 +164,7 @@
               (click)="
                 removeNotification(
                   $event,
-                  notification.NotificationID
+                  notification.notificationID.toString()
                 )
               "
             >
